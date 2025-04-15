@@ -1,2 +1,2 @@
 default:
-	g++ -lSDL2 main.cpp -o fido.o
+	g++ main.cpp -o ragdol.o `sdl2-config --cflags --libs`
