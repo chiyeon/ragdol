@@ -1,0 +1,65 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-O2",
+      "-I./src",
+      "-I/usr/local/include/SDL2",
+      "-D_REENTRANT",
+      "-Wl,-rpath,/usr/local/lib",
+      "-Wl,--enable-new-dtags",
+      "-o",
+      "./ragdol",
+      "./src/main.cpp"
+    ],
+    "directory": "/home/chi/projects/ragdol",
+    "file": "/home/chi/projects/ragdol/src/main.cpp",
+    "output": "/home/chi/projects/ragdol/ragdol"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-O2",
+      "-I./src",
+      "-I/usr/local/include/SDL2",
+      "-D_REENTRANT",
+      "-Wl,-rpath,/usr/local/lib",
+      "-Wl,--enable-new-dtags",
+      "-o",
+      "./ragdol",
+      "./src/sys/graphics.cpp"
+    ],
+    "directory": "/home/chi/projects/ragdol",
+    "file": "/home/chi/projects/ragdol/src/sys/graphics.cpp",
+    "output": "/home/chi/projects/ragdol/ragdol"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-O2",
+      "-I./src",
+      "-I/usr/local/include/SDL2",
+      "-D_REENTRANT",
+      "-Wl,-rpath,/usr/local/lib",
+      "-Wl,--enable-new-dtags",
+      "-o",
+      "./ragdol",
+      "./src/sys/system.cpp"
+    ],
+    "directory": "/home/chi/projects/ragdol",
+    "file": "/home/chi/projects/ragdol/src/sys/system.cpp",
+    "output": "/home/chi/projects/ragdol/ragdol"
+  }
+]

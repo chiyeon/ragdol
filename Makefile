@@ -1,2 +1,9 @@
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -I./src
+LDFLAGS = `sdl2-config --cflags --libs`
+
+SRC = ./src/*.cpp ./src/*/*.cpp
+BIN = ./ragdol
+
 default:
-	g++ main.cpp -o ragdol.o `sdl2-config --cflags --libs`
+	$(CXX) $(CXXFLAGS) $(SRC) -o $(BIN) $(LDFLAGS)
