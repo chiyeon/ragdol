@@ -27,16 +27,22 @@ void update() {
 
    if (sys.input().is_button_held(BTN_UP)) {
       y--;
+      sys.graphics().draw_text(1, 10, "UP");
    } 
    if (sys.input().is_button_held(BTN_DOWN)) {
       y++;
+      sys.graphics().draw_text(1, 10, "DOWN");
    }
    if (sys.input().is_button_held(BTN_LEFT)) {
       x--;
+      sys.graphics().draw_text(1, 10, "LEFT");
    }
    if (sys.input().is_button_held(BTN_RIGHT)) {
       x++;
+      sys.graphics().draw_text(1, 10, "RIGHT");
    }
+
+   sys.graphics().draw_text(1, 1, "HELLO WORLD");
 
    sys.graphics().draw_sprite(x, y, TEST_TEX);
 }

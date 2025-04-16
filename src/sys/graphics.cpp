@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 
 #include <cmath>
+#include <string>
+#include <span>
 
 void Graphics::update_frame_buffer(SDL_Texture *frame_buffer) {
    uint32_t *pixels;
@@ -36,13 +38,27 @@ void Graphics::fill_vram_test() {
    }
 }
 
-void Graphics::draw_sprite(int x, int y, Sprite s) {
-   for (int i = y; i < std::min(SCREEN_HEIGHT, y + 8); ++i) {
-      for (int j = x; j < std::min(SCREEN_WIDTH, x + 8); ++j) {
+void Graphics::draw_sprite(int x, int y, std::span<const Color> s) {
+   int sw = sqrt(s.size());
+   for (int i = y; i < std::min(SCREEN_HEIGHT, y + sw); ++i) {
+      for (int j = x; j < std::min(SCREEN_WIDTH, x + sw); ++j) {
          int vram_ind = i * SCREEN_WIDTH + j;
-         int spr_ind = (i - y) * 8 + (j - x);
+         int spr_ind = (i - y) * sw + (j - x);
          vram[vram_ind] = s[spr_ind];
       }
+   }
+}
+
+void Graphics::draw_text(int x, int y, std::string s) {
+   int offset = 0;
+
+   for (int i = 0; i < s.size(); ++i) {
+      if (isalpha(s[i])) {
+         auto letter = fontface[s[i] - 'A'];
+         draw_sprite(x + offset, y, letter);
+      }
+
+      offset += 6;
    }
 }
 

@@ -3,7 +3,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
-      "-std=c++17",
+      "-std=c++20",
       "-Wall",
       "-Wextra",
       "-O2",
@@ -24,7 +24,7 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
-      "-std=c++17",
+      "-std=c++20",
       "-Wall",
       "-Wextra",
       "-O2",
@@ -45,7 +45,28 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
-      "-std=c++17",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-O2",
+      "-I./src",
+      "-I/usr/local/include/SDL2",
+      "-D_REENTRANT",
+      "-Wl,-rpath,/usr/local/lib",
+      "-Wl,--enable-new-dtags",
+      "-o",
+      "./ragdol",
+      "./src/sys/input.cpp"
+    ],
+    "directory": "/home/chi/projects/ragdol",
+    "file": "/home/chi/projects/ragdol/src/sys/input.cpp",
+    "output": "/home/chi/projects/ragdol/ragdol"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++20",
       "-Wall",
       "-Wextra",
       "-O2",
