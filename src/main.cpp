@@ -20,21 +20,25 @@ const Sprite TEST_TEX = {
    0, 0, 1, 1, 1, 1, 0, 0,
 };
 
-float x = 0.0;
-
-int sx = 0;
-int sy = 0;
+int x = SCREEN_WIDTH / 2;
+int y = SCREEN_HEIGHT / 2;
 
 void update() {
-   x += 0.1;
-   sys.graphics().draw_sprite(sin(x) * 10 + 20, sin(x * 2) * 5 + 20, TEST_TEX);
 
-   sys.graphics().draw_line(50, 50 + 25 * sin(x), 75, 75 + -25 * sin(x), 2);
-   
-   sx++;
-   sy++;
+   if (sys.input().is_button_held(BTN_UP)) {
+      y--;
+   } 
+   if (sys.input().is_button_held(BTN_DOWN)) {
+      y++;
+   }
+   if (sys.input().is_button_held(BTN_LEFT)) {
+      x--;
+   }
+   if (sys.input().is_button_held(BTN_RIGHT)) {
+      x++;
+   }
 
-   sys.graphics().draw_pixel(sx, sin(sy) * 3 + 20, 3);
+   sys.graphics().draw_sprite(x, y, TEST_TEX);
 }
 
 int main(/*int argc, char* argv[]*/) {

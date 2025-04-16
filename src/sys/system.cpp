@@ -33,9 +33,13 @@ void System::start() {
          if (event.type == SDL_QUIT) running = false;
       }
 
-      gfx.flush_vram();
+      input_.poll_input();
+
+      graphics_.flush_vram();
+
       update();
-      gfx.update_frame_buffer(frame_buffer);
+
+      graphics_.update_frame_buffer(frame_buffer);
       draw_frame_buffer();
 
       SDL_Delay(16);

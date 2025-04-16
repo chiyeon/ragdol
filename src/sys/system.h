@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graphics.h"
+#include "input.h"
 
 #include <SDL2/SDL.h>
 
@@ -14,7 +15,8 @@ public:
 
    void set_update_function(std::function<void()> fn) { update = fn; }
 
-   Graphics& graphics() { return gfx; }
+   Graphics& graphics() { return graphics_; }
+   Input& input() { return input_; }
 
 private:
    std::function<void()> update;
@@ -24,7 +26,8 @@ private:
    SDL_Renderer *renderer;
    SDL_Window *window;
 
-   Graphics gfx;
+   Graphics graphics_;
+   Input input_;
 
    SDL_Texture *frame_buffer;
 
