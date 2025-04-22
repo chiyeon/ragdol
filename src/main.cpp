@@ -52,14 +52,12 @@ void update() {
 */
 
 int main(/*int argc, char* argv[]*/) {
-   Interpreter interpreter("3 + 2 + 3 - 21 * (2 + 2 * (3 * (3 + 2)) - 2)");
+   Interpreter interpreter("{ let apple = 2; }");
    auto tokens = interpreter.get_tokens();
 
-   /*
    for (auto t : tokens) {
-      std::cout << t.line << ", " << t.column << ": " << interpreter.token_to_str(t) << std::endl;
+      std::cout << t.line << ", " << t.column << "\t: " << t.to_str() << std::endl;
    }
-   */
 
    //sys.set_update_function(update);
    //sys.start();

@@ -24,6 +24,7 @@ enum class TokenType {
    RIGHTBRACKET,
    LEFTBRACE,
    RIGHTBRACE,
+   SEMICOLON,
    ENDOFFILE
 };
 
@@ -41,6 +42,8 @@ struct Token {
       , line(line)
       , column(column)
       {}
+
+   std::string to_str();
 
    static const std::unordered_map<TokenType, std::string> type_to_str;
 };

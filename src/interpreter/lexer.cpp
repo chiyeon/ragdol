@@ -73,6 +73,7 @@ Token Lexer::scan_token() {
       case ']': return make_token(TokenType::RIGHTBRACKET); break;
       case '{': return make_token(TokenType::LEFTBRACE); break;
       case '}': return make_token(TokenType::RIGHTBRACE); break;
+      case ';': return make_token(TokenType::SEMICOLON); break;
    }
 
    // literals & identifiers

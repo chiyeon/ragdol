@@ -1,7 +1,7 @@
 #pragma once
 
 #include "token.h"
-#include "ast_nodes.h"
+#include "ast.h"
 
 #include <vector>
 
@@ -26,11 +26,19 @@ public:
       tokens = t;
    }
 
+   ASTNode* parse();
+
+   ASTNode* program();
+   ASTNode* block();
+   std::vector<ASTNode*> statement_list();
+   ASTNode* statement();
+   ASTNode* assignment_statement();
+   ASTNode* variable();
+   ASTNode* empty();
+
    ASTNode* factor();
    ASTNode* term();
    ASTNode* expr();
-
-   ASTNode* parse();
 
    LiteralInt* lower_literal_int();
 };

@@ -4,7 +4,7 @@
 #include "token.h"
 #include "parser.h"
 #include "ast_visitor.h"
-#include "ast_nodes.h"
+#include "ast.h"
 #include "value.h"
 
 #include <string>
@@ -25,4 +25,9 @@ public:
 
    Value* visit_literal_int(LiteralInt*);
    Value* visit_binary_op(BinaryOp*);
+   Value* visit_unary_op(UnaryOp*);
+   Value* visit_block(Block*);
+   Value* visit_no_op(NoOp*);
+   Value* visit_assignment(Assignment*);
+   Value* visit_variable(Variable*);
 };

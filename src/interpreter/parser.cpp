@@ -1,9 +1,16 @@
 #include "parser.h"
 #include "token.h"
+#include "ast.h"
 
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
+
+ASTNode* Parser::parse() {
+   ASTNode* node = program();
+   // checks
+   return node;
+}
 
 bool Parser::is_at_end() {
    return tokens.at(current).type == TokenType::ENDOFFILE;
@@ -27,21 +34,89 @@ void Parser::eat(TokenType type) {
    }
 }
 
+ASTNode* Parser::program() {
+   // TODO more here
+   return block(); 
+}
+
+ASTNode* Parser::block() {
+   eat(TokenType::LEFTPAREN);
+   Block* block = new Block(peek(), statement_list());
+   eat(TokenType::RIGHTPAREN);
+
+   return block;
+}
+
+std::vector<ASTNode*> Parser::statement_list() {
+   std::vector<ASTNode*> nodes;
+   nodes.push_back(statement());
+
+   while (peek().type == TokenType::SEMICOLON) {
+      eat(TokenType::SEMICOLON);
+      nodes.push_back(statement());
+   }
+
+   // TODO error check
+   
+   return nodes;
+}
+
+ASTNode* Parser::statement() {
+   switch (peek().type) {
+      default:
+         return empty();
+      case TokenType::LEFTPAREN:
+         return block();
+      case TokenType::IDENTIFIER:
+         return assignment_statement();
+   }
+}
+
+ASTNode* Parser::assignment_statement() {
+   ASTNode* dest = variable();
+   Token t = peek();
+   
+   eat(TokenType::ASSIGN);
+
+   ASTNode* target = expr();
+
+   return new Assignment(t, dest, t, target);
+}
+
+ASTNode* Parser::variable() {
+   ASTNode* n = new Variable(peek());
+   eat(TokenType::IDENTIFIER);
+   return n;
+}
+
+ASTNode* Parser::empty() {
+   return new NoOp(peek());
+}
+
 ASTNode* Parser::factor() {
    /*
     * factor = INTEGER | LEFTPAREN ASTNode RIGHTPAREN
     */
    Token t = peek();
-   if (t.type == TokenType::INTEGER) {
-      eat(TokenType::INTEGER);
-      return new LiteralInt(t, std::atoi(t.lexeme.c_str()));
-   } else if (t.type == TokenType::LEFTPAREN) {
-      eat(TokenType::LEFTPAREN);
-      ASTNode* val = expr();
-      eat(TokenType::RIGHTPAREN);
-      return val;
-   } else {
-      error(TokenType::INTEGER);
+   switch (t.type) {
+      default:
+         /* TODO move this somewhere else? */
+         return variable();
+         break;
+      case TokenType::PLUS:
+         eat(TokenType::PLUS);
+         return new UnaryOp(t, factor());
+      case TokenType::MINUS:
+         eat(TokenType::MINUS);
+         return new UnaryOp(t, factor());
+      case TokenType::INTEGER:
+         eat(TokenType::INTEGER);
+         return new LiteralInt(t, std::atoi(t.lexeme.c_str()));
+      case TokenType::LEFTPAREN:
+         eat(TokenType::LEFTPAREN);
+         ASTNode* val = expr();
+         eat(TokenType::RIGHTPAREN);
+         return val;
    }
 }
 

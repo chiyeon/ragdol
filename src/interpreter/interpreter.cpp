@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 std::vector<Token>& Interpreter::get_tokens() {
    if (tokens.empty()) {
@@ -11,13 +12,14 @@ std::vector<Token>& Interpreter::get_tokens() {
 
    parser.set_tokens(tokens);
    //parser.parse();
+   /*
    ASTNode* ast = parser.expr();
 
    std::cout << ast->to_str() << std::endl;
 
    Value* v = visit_binary_op((BinaryOp*)ast);
    std::cout << v->get_int() << std::endl;
-
+   */
    return tokens;
 }
 
@@ -47,4 +49,34 @@ Value* Interpreter::visit_binary_op(BinaryOp* node) {
       default:
          return new Value(Value::Type::NIL);
    }
+}
+
+Value* Interpreter::visit_unary_op(UnaryOp* node) {
+   Value* expr = node->expr->accept(*this);
+
+   switch (node->token.type) {
+      case TokenType::PLUS:
+         return new Value(Value::Type::INT, +expr->get_int());
+      case TokenType::MINUS:
+         return new Value(Value::Type::INT, -expr->get_int());
+      default:
+         std::cout << "Error" << std::endl;
+   }
+}
+
+Value* Interpreter::visit_block(Block* node) {
+   for (auto n : node->statements) {
+      n->accept(*this);
+   }
+}
+
+Value* Interpreter::visit_no_op(NoOp* node) {
+ }
+
+Value* Interpreter::visit_assignment(Assignment* node) {
+   std::string var_name = node->destination->value->get_string();
+}
+
+Value* Interpreter::visit_variable(Variable* node) {
+
 }

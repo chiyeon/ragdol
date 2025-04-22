@@ -36,4 +36,9 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::LEFTBRACE, "left_brace" },
    { TokenType::RIGHTBRACE, "right_brace" },
    { TokenType::ENDOFFILE, "end_of_file" },
+   { TokenType::SEMICOLON, "semicolon" }
 };
+
+std::string Token::to_str() {
+   return "Token<" + Token::type_to_str.at(type) + ", \"" + lexeme + "\">";
+}
