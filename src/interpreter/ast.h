@@ -12,14 +12,15 @@
  * Lexer class converts raw text to tokens, parser converts tokens to AST nodes
  */
 
-struct ASTVisitor;
+struct Interpreter;
 
 struct ASTNode {
    Token token;
 
    ASTNode(Token t) : token(t) {}
    virtual ~ASTNode() = default;
-   virtual Value* accept(ASTVisitor& visitor) = 0;
+
+   virtual Value* accept(Interpreter& visitor) = 0;
 
    virtual std::string to_str() {
       return token.lexeme;
@@ -32,7 +33,7 @@ struct BinaryOp : public ASTNode {
    ASTNode* right;
    
    BinaryOp(Token t, ASTNode* l, Token o, ASTNode* r) : ASTNode(t), left(l), op(o), right(r) {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "BinaryOperation<" + left->to_str() + op.lexeme + right->to_str() + ">";
@@ -43,14 +44,14 @@ struct LiteralInt : public ASTNode {
    int value;
 
    LiteralInt(Token t, int value) : ASTNode(t), value(value) {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 };
 
 struct UnaryOp : public ASTNode {
    ASTNode* expr;
 
    UnaryOp(Token t, ASTNode* expr) : ASTNode(t), expr(expr) {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 };
 
 struct Block : public ASTNode {
@@ -64,7 +65,7 @@ struct Block : public ASTNode {
    Block(Token t, const std::vector<ASTNode*>& statements)
       : ASTNode(t), statements(statements)
       {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       std::string out = "Block {\n";
@@ -93,7 +94,7 @@ struct Variable : public ASTNode {
       : ASTNode(t), var_name(t.lexeme)
       {}
 
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
    std::string get_var_name() { return var_name; }
 
    std::string to_str() {
@@ -112,7 +113,7 @@ struct Assignment : public ASTNode {
    Assignment(Token t, Variable* destination, Token op, ASTNode* target)
       : ASTNode(t), destination(destination), op(op), target(target)
       {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "Assignment<" + destination->to_str() + " = " + target->to_str() + ">";
@@ -121,19 +122,33 @@ struct Assignment : public ASTNode {
 
 struct NoOp : public ASTNode {
    NoOp(Token t) : ASTNode(t) {}
-   Value* accept(ASTVisitor& visitor) override;
+   Value* accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "NoOp";
    }
 };
 
+template<typename ret>
 struct ASTVisitor {
-   virtual Value* visit_binary_op(BinaryOp*) = 0;
-   virtual Value* visit_literal_int(LiteralInt*) = 0;
-   virtual Value* visit_unary_op(UnaryOp*) = 0;
-   virtual Value* visit_block(Block*) = 0;
-   virtual Value* visit_variable(Variable*) = 0;
-   virtual Value* visit_assignment(Assignment*) = 0;
-   virtual Value* visit_no_op(NoOp*) = 0;
+   /*
+    * ASTVisitor is a template class for visitors that 
+    * have custom logic to handle each node
+    */
+
+   /*
+    * EXPRESSIONS (returns value* for instance)
+    */
+   virtual ret visit_binary_op(BinaryOp*) = 0;
+   virtual ret visit_literal_int(LiteralInt*) = 0;
+   virtual ret visit_unary_op(UnaryOp*) = 0;
+   virtual ret visit_variable(Variable*) = 0;
+
+   /*
+    * STATEMENTS
+    * dont necessarily return anything
+    */
+   virtual ret visit_block(Block*) = 0;
+   virtual ret visit_assignment(Assignment*) = 0;
+   virtual ret visit_no_op(NoOp*) = 0;
 };

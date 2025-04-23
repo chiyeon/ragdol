@@ -7,7 +7,7 @@
 #include <cmath>
 #include <array>
 
-//System sys;
+// System sys;
 
 typedef std::array<Color, 64> Sprite;
 
@@ -52,19 +52,13 @@ void update() {
 */
 
 int main(/*int argc, char* argv[]*/) {
+   std::string INPUT = 
+      "{\n"
+      "  # comment\n"
+      "  x = 20\n"
+      "  y = 10 #yes\n"
+      "}";
 
-   std::string INPUT = "{\n"
-      "  # this is a comment\n"
-      "  let x = 2;#\n"
-      "  let y = 4; # and this is too\n"
-      "  let answer = 2 * (4 * x) + (1 - y) * x + (x / y);\n"
-      "  {\n"
-      "#  a sdflkajsdflk \n"
-      "#\n"
-      "     let a = x + y + answer;\n"
-      "  }\n"
-      "}\n"
-      "#";
 
    std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
    std::cout << "" << INPUT << std::endl;
@@ -72,7 +66,7 @@ int main(/*int argc, char* argv[]*/) {
    Interpreter interpreter(INPUT);
    auto tokens = interpreter.get_tokens();
 
-   /*
+   /* 
    std::cout << "Lexed tokens:" << std::endl;
    std::cout << "\t";
    for (auto t : tokens) {
@@ -89,8 +83,10 @@ int main(/*int argc, char* argv[]*/) {
    interpreter.interpret();
    interpreter.print_variables();
 
-   //sys.set_update_function(update);
-   //sys.start();
+   /*
+   sys.set_update_function(update);
+   sys.start();
+   */
 
    return 0;
 }

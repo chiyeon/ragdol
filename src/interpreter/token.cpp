@@ -37,7 +37,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::RIGHTBRACE, "right_brace" },
    { TokenType::ENDOFFILE, "end_of_file" },
    { TokenType::SINGLELINECOMMENT, "single_line_comment" },
-   { TokenType::SEMICOLON, "semicolon" }
+   { TokenType::STATEMENTEND, "statement_end" }
 };
 
 std::string Token::to_str() {

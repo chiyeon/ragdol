@@ -51,8 +51,8 @@ std::vector<ASTNode*> Parser::statement_list() {
    std::vector<ASTNode*> nodes;
    nodes.push_back(statement());
 
-   while (peek().type == TokenType::SEMICOLON) {
-      eat(TokenType::SEMICOLON);
+   while (peek().type == TokenType::STATEMENTEND) {
+      eat(TokenType::STATEMENTEND);
       nodes.push_back(statement());
    }
 
@@ -67,19 +67,16 @@ ASTNode* Parser::statement() {
          return empty();
       case TokenType::LEFTBRACE:
          return block();
-      case TokenType::LET:
+      case TokenType::IDENTIFIER:
          return assignment_statement();
    }
 }
 
 ASTNode* Parser::assignment_statement() {
    /*
-    * LET IDENTIFIER ASSIGN/= Expr
+    * IDENTIFIER ASSIGN/= Expr
     */
-
-   // deal with LET keyword (TODO; maybe no let?)
-   Token let_token = peek();
-   eat(TokenType::LET);
+   Token t = peek();
 
    // get variable / handle identifier
    Variable* dest = variable();
@@ -91,7 +88,7 @@ ASTNode* Parser::assignment_statement() {
    // expression target
    ASTNode* target = expr();
 
-   return new Assignment(let_token, dest, assign_token, target);
+   return new Assignment(t, dest, assign_token, target);
 }
 
 Variable* Parser::variable() {

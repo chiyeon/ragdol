@@ -28,12 +28,20 @@ bool Lexer::match(char expected) {
    return true;
 }
 
-void Lexer::skip_whitespace() {
+bool Lexer::skip_whitespace() {
+   /*
+    * skips all whitespace/newlines
+    *
+    * returns true if it passed at least 1 newline
+    */
+
+   bool found_newline = false;
    while (!is_at_end()) {
       char c = peek();
       if (std::isspace(c)) {
          start++;
          if (c == '\n') {
+            found_newline = true;
             line++;
             column = 1;
          } else {
@@ -44,6 +52,8 @@ void Lexer::skip_whitespace() {
          break;
       }
    }
+
+   return found_newline;
 }
 
 void Lexer::skip_until_newline() {
@@ -63,12 +73,26 @@ void Lexer::skip_until_newline() {
 }
 
 Token Lexer::make_token(TokenType type) {
-   return Token(type, src.substr(start, current - start), line, column - (current - start));
+   Token t(type, src.substr(start, current - start), line, column - (current - start));
+
+   last_token = &t;
+
+   return t;
 }
 
 Token Lexer::scan_token() {
+   // if our last token wasn't STATEMENTEND or SINGLELINECOMMENT and we passed a newline
+   // add one to our vectorlist
+   
    // go to next valid thing to lex
-   skip_whitespace();
+   bool passed_newline = skip_whitespace();
+
+   if (passed_newline
+         && last_token->type != TokenType::STATEMENTEND
+         && last_token->type != TokenType::SINGLELINECOMMENT
+      ) {
+      return make_token(TokenType::STATEMENTEND);
+   }
 
    // get current char & advance pos.
    // src[current] is now the next char
@@ -90,7 +114,7 @@ Token Lexer::scan_token() {
       case ']': return make_token(TokenType::RIGHTBRACKET); break;
       case '{': return make_token(TokenType::LEFTBRACE); break;
       case '}': return make_token(TokenType::RIGHTBRACE); break;
-      case ';': return make_token(TokenType::SEMICOLON); break;
+      case ';': return make_token(TokenType::STATEMENTEND); break;
       case '#': 
          Token comment = make_token(TokenType::SINGLELINECOMMENT);
          return comment;
@@ -134,6 +158,7 @@ std::vector<Token> Lexer::tokenize() {
    std::vector<Token> tokens;
    while (!is_at_end()) {
       start = current;
+
       Token t = scan_token();
       std::cout << "found " << t.to_str() << std::endl;
 
@@ -146,7 +171,10 @@ std::vector<Token> Lexer::tokenize() {
             skip_until_newline();
             break;
       }
+      
    }
+
+   std::cout << "Found end" << std::endl;
 
    tokens.emplace_back(TokenType::ENDOFFILE, "EOF", line, column);
 

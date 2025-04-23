@@ -12,13 +12,14 @@ class Lexer {
    size_t start;
    int line;
    int column;
+   Token* last_token;
 
    bool is_at_end() const;
    char peek() const;
    char peekpeek() const;
    char advance();
    bool match(char expected);
-   void skip_whitespace();
+   bool skip_whitespace();
    void skip_until_newline();
 
    Token make_token(TokenType type);
@@ -31,7 +32,6 @@ class Lexer {
    Token parse_identifier();
 
    std::unordered_map<std::string, TokenType> keywords = {
-      { "let", TokenType::LET },
       { "if", TokenType::IF },
       { "while", TokenType::WHILE },
       { "for", TokenType::FOR },

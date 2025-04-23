@@ -24,7 +24,7 @@ enum class TokenType {
    RIGHTBRACKET,
    LEFTBRACE,
    RIGHTBRACE,
-   SEMICOLON,
+   STATEMENTEND, /* semi colon or end of line */
    SINGLELINECOMMENT,
    ENDOFFILE
 };

@@ -94,6 +94,7 @@ Value* Interpreter::visit_block(Block* node) {
    for (auto n : node->statements) {
       n->accept(*this);
    }
+
    return nullptr;
 }
 
@@ -108,7 +109,7 @@ Value* Interpreter::visit_assignment(Assignment* node) {
    // assign variable to value
    Value* nv = node->target->accept(*this);
    variables.insert_or_assign(node->destination->get_var_name(), nv); 
-
+   
    return nullptr;
 }
 
@@ -123,8 +124,6 @@ Value* Interpreter::visit_variable(Variable* node) {
    } else {
       std::cout << "error tried to get variable that doesnt exist" << std::endl;
    }
-
-   return nullptr;
 }
 
 void Interpreter::print_variables() {

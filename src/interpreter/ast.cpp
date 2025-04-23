@@ -1,29 +1,33 @@
 #include "ast.h"
+#include "interpreter.h"
 
-Value* BinaryOp::accept(ASTVisitor& visitor) {
+/*
+ * NODE ACCEPT DEF
+ */
+Value* BinaryOp::accept(Interpreter& visitor) {
    return visitor.visit_binary_op(this);
 }
 
-Value* LiteralInt::accept(ASTVisitor& visitor) {
+Value* LiteralInt::accept(Interpreter& visitor) {
    return visitor.visit_literal_int(this);
 }
 
-Value* UnaryOp::accept(ASTVisitor& visitor) {
+Value* UnaryOp::accept(Interpreter& visitor) {
    return visitor.visit_unary_op(this);
 }
 
-Value* Block::accept(ASTVisitor& visitor) {
+Value* Block::accept(Interpreter& visitor) {
    return visitor.visit_block(this);
 }
 
-Value* Variable::accept(ASTVisitor& visitor) {
+Value* Variable::accept(Interpreter& visitor) {
    return visitor.visit_variable(this);
 }
 
-Value* Assignment::accept(ASTVisitor& visitor) {
+Value* Assignment::accept(Interpreter& visitor) {
    return visitor.visit_assignment(this);
 }
 
-Value* NoOp::accept(ASTVisitor& visitor) {
+Value* NoOp::accept(Interpreter& visitor) {
    return visitor.visit_no_op(this);
 }
