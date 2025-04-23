@@ -1,6 +1,7 @@
 #pragma once
 
 #include <variant>
+#include <string>
 
 typedef std::variant<std::monostate, int, float> Data;
 
@@ -23,6 +24,8 @@ public:
    Value(Type type)
       : type(type)
       {}
+
+   std::string to_str();
 
    Type get_type();
    Data get_data();

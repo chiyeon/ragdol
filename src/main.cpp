@@ -52,12 +52,33 @@ void update() {
 */
 
 int main(/*int argc, char* argv[]*/) {
-   Interpreter interpreter("{ let apple = 2; }");
+
+   std::string INPUT = "{\n"
+      "  let x = 2;\n"
+      "  let y = 4;\n"
+      "  let answer = 2 * (4 * x) + (1 - y) * x + (x / y);\n"
+      "}";
+
+   std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
+   std::cout << "" << INPUT << std::endl;
+
+   Interpreter interpreter(INPUT);
    auto tokens = interpreter.get_tokens();
 
+   std::cout << "Lexed tokens:" << std::endl;
+   std::cout << "\t";
    for (auto t : tokens) {
-      std::cout << t.line << ", " << t.column << "\t: " << t.to_str() << std::endl;
+      std::cout << t.line << ", " << t.column << "\t: " << t.to_str() << ", ";
    }
+   std::cout << std::endl;
+
+   std::cout << "Parsed AST:" << std::endl;
+   ASTNode* ast = interpreter.parse();
+   std::cout << ast->to_str() << std::endl;
+
+   std::cout << "Interpreting..." << std::endl;
+   interpreter.interpret();
+   interpreter.print_variables();
 
    //sys.set_update_function(update);
    //sys.start();

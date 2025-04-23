@@ -26,7 +26,6 @@ Token Parser::peek() {
 }
 
 void Parser::eat(TokenType type) {
-   std::cout << "Checking " << Token::type_to_str.at(type) << std::endl;
    if (peek().type == type) {
       advance();
    } else {
@@ -40,9 +39,10 @@ ASTNode* Parser::program() {
 }
 
 ASTNode* Parser::block() {
-   eat(TokenType::LEFTPAREN);
-   Block* block = new Block(peek(), statement_list());
-   eat(TokenType::RIGHTPAREN);
+   Token block_start = peek();
+   eat(TokenType::LEFTBRACE);
+   Block* block = new Block(block_start, statement_list());
+   eat(TokenType::RIGHTBRACE);
 
    return block;
 }
@@ -67,24 +67,35 @@ ASTNode* Parser::statement() {
          return empty();
       case TokenType::LEFTPAREN:
          return block();
-      case TokenType::IDENTIFIER:
+      case TokenType::LET:
          return assignment_statement();
    }
 }
 
 ASTNode* Parser::assignment_statement() {
-   ASTNode* dest = variable();
-   Token t = peek();
+   /*
+    * LET IDENTIFIER ASSIGN/= Expr
+    */
+
+   // deal with LET keyword (TODO; maybe no let?)
+   Token let_token = peek();
+   eat(TokenType::LET);
+
+   // get variable / handle identifier
+   Variable* dest = variable();
    
+   // assign 
+   Token assign_token = peek();
    eat(TokenType::ASSIGN);
 
+   // expression target
    ASTNode* target = expr();
 
-   return new Assignment(t, dest, t, target);
+   return new Assignment(let_token, dest, assign_token, target);
 }
 
-ASTNode* Parser::variable() {
-   ASTNode* n = new Variable(peek());
+Variable* Parser::variable() {
+   Variable* n = new Variable(peek());
    eat(TokenType::IDENTIFIER);
    return n;
 }

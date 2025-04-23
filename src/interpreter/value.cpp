@@ -1,5 +1,22 @@
 #include "value.h"
 
+std::string Value::to_str() {
+   switch(type) {
+      case Type::NIL:
+         return "NULL";
+      case Type::INT:
+         {
+            int* i = std::get_if<int>(&data);
+            return std::to_string(*i);
+         }
+      case Type::FLOAT:
+         {
+            float* f = std::get_if<float>(&data);
+            return std::to_string(*f);
+         }
+   }
+}
+
 Value::Type Value::get_type() {
    return type;
 }

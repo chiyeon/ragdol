@@ -34,8 +34,8 @@ struct BinaryOp : public ASTNode {
    BinaryOp(Token t, ASTNode* l, Token o, ASTNode* r) : ASTNode(t), left(l), op(o), right(r) {}
    Value* accept(ASTVisitor& visitor) override;
 
-   std::string to_str() {
-      return "(" + left->to_str() + op.lexeme + right->to_str() + ")";
+   std::string to_str() override {
+      return "BinaryOperation<" + left->to_str() + op.lexeme + right->to_str() + ">";
    }
 };
 
@@ -66,6 +66,16 @@ struct Block : public ASTNode {
       {}
    Value* accept(ASTVisitor& visitor) override;
 
+   std::string to_str() override {
+      std::string out = "Block {\n";
+      for (auto s : statements) {
+         out += "\t" + s->to_str() + "\n";
+      }
+      out += "}";
+
+      return out;
+   }
+
    /*
    void set_statements(std::vector<ASTNode*>& statements) {
       statements = statements;
@@ -77,16 +87,18 @@ struct Variable : public ASTNode {
    /*
     * variable obj
     */
-   Value* value;
-   std::string var_name;
+   std::string var_name; // this is just token.lexeme but we store it here to make more sense in AST
 
-   Variable(Token t, Value* v)
-      : ASTNode(t), value(v)
-      {}
    Variable(Token t)
-      : ASTNode(t), value(new Value(Value::Type::INT, 0))
+      : ASTNode(t), var_name(t.lexeme)
       {}
+
    Value* accept(ASTVisitor& visitor) override;
+   std::string get_var_name() { return var_name; }
+
+   std::string to_str() {
+      return "Variable<" + var_name + ">";
+   }
 };
 
 struct Assignment : public ASTNode {
@@ -101,11 +113,19 @@ struct Assignment : public ASTNode {
       : ASTNode(t), destination(destination), op(op), target(target)
       {}
    Value* accept(ASTVisitor& visitor) override;
+
+   std::string to_str() override {
+      return "Assignment<" + destination->get_var_name() + " = " + target->to_str() + ">";
+   }
 };
 
 struct NoOp : public ASTNode {
    NoOp(Token t) : ASTNode(t) {}
    Value* accept(ASTVisitor& visitor) override;
+
+   std::string to_str() override {
+      return "NoOp";
+   }
 };
 
 
@@ -113,4 +133,8 @@ struct ASTVisitor {
    virtual Value* visit_binary_op(BinaryOp*) = 0;
    virtual Value* visit_literal_int(LiteralInt*) = 0;
    virtual Value* visit_unary_op(UnaryOp*) = 0;
+   virtual Value* visit_block(Block*) = 0;
+   virtual Value* visit_variable(Variable*) = 0;
+   virtual Value* visit_assignment(Assignment*) = 0;
+   virtual Value* visit_no_op(NoOp*) = 0;
 };

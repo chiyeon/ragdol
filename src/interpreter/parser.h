@@ -33,7 +33,7 @@ public:
    std::vector<ASTNode*> statement_list();
    ASTNode* statement();
    ASTNode* assignment_statement();
-   ASTNode* variable();
+   Variable* variable();
    ASTNode* empty();
 
    ASTNode* factor();
