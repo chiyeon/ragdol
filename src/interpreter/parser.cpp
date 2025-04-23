@@ -65,7 +65,7 @@ ASTNode* Parser::statement() {
    switch (peek().type) {
       default:
          return empty();
-      case TokenType::LEFTPAREN:
+      case TokenType::LEFTBRACE:
          return block();
       case TokenType::LET:
          return assignment_statement();
