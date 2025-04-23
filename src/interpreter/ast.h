@@ -115,7 +115,7 @@ struct Assignment : public ASTNode {
    Value* accept(ASTVisitor& visitor) override;
 
    std::string to_str() override {
-      return "Assignment<" + destination->get_var_name() + " = " + target->to_str() + ">";
+      return "Assignment<" + destination->to_str() + " = " + target->to_str() + ">";
    }
 };
 
@@ -127,7 +127,6 @@ struct NoOp : public ASTNode {
       return "NoOp";
    }
 };
-
 
 struct ASTVisitor {
    virtual Value* visit_binary_op(BinaryOp*) = 0;

@@ -25,6 +25,7 @@ enum class TokenType {
    LEFTBRACE,
    RIGHTBRACE,
    SEMICOLON,
+   SINGLELINECOMMENT,
    ENDOFFILE
 };
 

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 bool Lexer::is_at_end() const {
    return current >= src.size();
@@ -45,6 +46,22 @@ void Lexer::skip_whitespace() {
    }
 }
 
+void Lexer::skip_until_newline() {
+   /*
+    * skips all following characters in src
+    * until a newline is found (inclusive)
+    * for single line comments
+    */
+   while (!is_at_end()) {
+      char c = peek();
+      if (c == '\n') {
+         return;
+      } else {
+         c = advance();
+      }
+   }
+}
+
 Token Lexer::make_token(TokenType type) {
    return Token(type, src.substr(start, current - start), line, column - (current - start));
 }
@@ -74,6 +91,10 @@ Token Lexer::scan_token() {
       case '{': return make_token(TokenType::LEFTBRACE); break;
       case '}': return make_token(TokenType::RIGHTBRACE); break;
       case ';': return make_token(TokenType::SEMICOLON); break;
+      case '#': 
+         Token comment = make_token(TokenType::SINGLELINECOMMENT);
+         return comment;
+         break;
    }
 
    // literals & identifiers
@@ -114,8 +135,16 @@ std::vector<Token> Lexer::tokenize() {
    while (!is_at_end()) {
       start = current;
       Token t = scan_token();
-      if (t.type != TokenType::ENDOFFILE) {
-         tokens.push_back(t);
+      std::cout << "found " << t.to_str() << std::endl;
+
+      switch (t.type) {
+         default:
+            tokens.push_back(t);
+         case TokenType::ENDOFFILE:
+            break;
+         case TokenType::SINGLELINECOMMENT:
+            skip_until_newline();
+            break;
       }
    }
 

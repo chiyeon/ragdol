@@ -19,6 +19,7 @@ class Lexer {
    char advance();
    bool match(char expected);
    void skip_whitespace();
+   void skip_until_newline();
 
    Token make_token(TokenType type);
 

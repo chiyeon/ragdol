@@ -54,13 +54,17 @@ void update() {
 int main(/*int argc, char* argv[]*/) {
 
    std::string INPUT = "{\n"
-      "  let x = 2;\n"
-      "  let y = 4;\n"
+      "  # this is a comment\n"
+      "  let x = 2;#\n"
+      "  let y = 4; # and this is too\n"
       "  let answer = 2 * (4 * x) + (1 - y) * x + (x / y);\n"
       "  {\n"
+      "#  a sdflkajsdflk \n"
+      "#\n"
       "     let a = x + y + answer;\n"
       "  }\n"
-      "}";
+      "}\n"
+      "#";
 
    std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
    std::cout << "" << INPUT << std::endl;
