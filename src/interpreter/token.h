@@ -6,6 +6,7 @@
 enum class TokenType {
    DOUBLE,
    INTEGER,
+   STRING,
    BOOLEAN,
    IDENTIFIER,
    NOT, NOT_EQ,

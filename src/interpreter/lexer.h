@@ -28,6 +28,7 @@ class Lexer {
    Token number();
    Token identifier();
 
+   Token parse_string();
    Token parse_number();
    Token parse_identifier();
 

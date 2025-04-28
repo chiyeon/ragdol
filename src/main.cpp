@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
    Interpreter interpreter(INPUT);
    auto tokens = interpreter.get_tokens();
 
-   /* 
+   /*
    std::cout << "Lexed tokens:" << std::endl;
    std::cout << "\t";
    for (auto t : tokens) {

@@ -80,6 +80,41 @@ Token Lexer::make_token(TokenType type) {
    return t;
 }
 
+Token Lexer::parse_string() {
+   //std::string str = "";
+   advance();
+
+   bool reading = true;
+   while (reading && !is_at_end()) {
+      switch (peek()) {
+         default:
+            //str += advance();
+            advance();
+            break;
+         case '\"':
+         case '\'':
+            reading = false;
+            advance();
+            break;
+      }
+   }
+
+   if (reading) {
+      // we were interrupted 
+      std::cout << "ERROR: unterminated string literal" << std::endl;
+      return make_token(TokenType::ENDOFFILE);
+   }
+
+   // trim the quotation marks
+   start++;
+   current--;
+   Token t = make_token(TokenType::STRING);
+   // fix current
+   current++;
+
+   return t;
+}
+
 Token Lexer::scan_token() {
    // if our last token wasn't STATEMENTEND or SINGLELINECOMMENT and we passed a newline
    // add one to our vectorlist
@@ -119,6 +154,9 @@ Token Lexer::scan_token() {
          break;
       case '.': return make_token(TokenType::PERIOD); break;
       case ',': return make_token(TokenType::COMMA); break;
+      case '\'':
+      case '\"': 
+          return parse_string(); break;
    }
 
    // literals & identifiers
@@ -176,7 +214,7 @@ std::vector<Token> Lexer::tokenize() {
       
    }
 
-   std::cout << "Found end" << std::endl;
+   //std::cout << "Found end" << std::endl;
 
    tokens.emplace_back(TokenType::ENDOFFILE, "EOF", line, column);
 
