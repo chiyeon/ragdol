@@ -3,12 +3,14 @@
 #include <variant>
 #include <string>
 
-typedef std::variant<std::monostate, int, float> Data;
+struct FunctionDecl;
+
+typedef std::variant<std::monostate, int, float, FunctionDecl*> Data;
 
 class Value {
 public:
    enum class Type {
-      NIL, INT, FLOAT
+      NIL, INT, FLOAT, FUNCTION
    };
 
 private:

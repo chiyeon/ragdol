@@ -117,6 +117,8 @@ Token Lexer::scan_token() {
       case '#': 
          return make_token(TokenType::SINGLELINECOMMENT);
          break;
+      case '.': return make_token(TokenType::PERIOD); break;
+      case ',': return make_token(TokenType::COMMA); break;
    }
 
    // literals & identifiers

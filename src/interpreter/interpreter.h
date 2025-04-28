@@ -71,4 +71,5 @@ public:
    std::shared_ptr<Value> visit_statement_list(StatementList*) override;
    std::shared_ptr<Value> visit_no_op(NoOp*) override;
    std::shared_ptr<Value> visit_assignment(Assignment*) override;
+   std::shared_ptr<Value> visit_function_decl(FunctionDecl*) override;
 };

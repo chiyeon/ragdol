@@ -35,3 +35,7 @@ std::shared_ptr<Value> Assignment::accept(Interpreter& visitor) {
 std::shared_ptr<Value> NoOp::accept(Interpreter& visitor) {
    return visitor.visit_no_op(this);
 }
+
+std::shared_ptr<Value> FunctionDecl::accept(Interpreter& visitor) {
+   return visitor.visit_function_decl(this);
+}

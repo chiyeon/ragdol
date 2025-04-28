@@ -185,6 +185,12 @@ std::shared_ptr<Value> Interpreter::visit_variable(Variable* node) {
    }
 }
 
+std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
+   log("Visited Function Declaration: " + node->to_str(), LOG_VERBOSE);
+
+   return nullptr;
+}
+
 void Interpreter::print_variables() {
    log("VARIABLES:");
    auto p = current_scope;

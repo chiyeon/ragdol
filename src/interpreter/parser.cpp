@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <set>
 
 ASTNode* Parser::parse() {
    ASTNode* node = program();
@@ -71,6 +72,8 @@ ASTNode* Parser::statement() {
          return assignment_statement(true);
       case TokenType::IDENTIFIER:
          return assignment_statement(false);
+      case TokenType::FUNCTIONDECL:
+         return function_decl();
    }
 }
 
@@ -177,4 +180,74 @@ ASTNode* Parser::expr() {
    }
 
    return n;
+}
+
+FunctionDecl* Parser::function_decl() {
+   /*
+    * fn IDENTIFIER(fn name) lparen, arbitrary # of args, r paren
+    * block/ { statmeent list }
+    */
+
+   std::string name;
+   std::vector<std::string> params;
+   std::set<std::string> encountered_params; // used just to check for dupes
+   StatementList* statements;
+
+   Token start = peek();
+
+   // eat function keyword
+   eat(TokenType::FUNCTIONDECL);
+
+   // get name of function
+   name = peek().lexeme;
+   eat(TokenType::IDENTIFIER);
+
+   // arguments
+   eat(TokenType::LEFTPAREN);
+   Token next = peek();
+
+   bool parsing_args = true;
+   while (parsing_args) {
+      next = peek();
+      switch (next.type) {
+         default:
+            std::cout << "ERROR: Encountered unexpected token when parsing function arguments: " << Token::type_to_str.at(next.type) << std::endl;
+            parsing_args = false;
+            break;
+         case TokenType::RIGHTPAREN:
+            eat(TokenType::RIGHTPAREN);
+            parsing_args = false;
+            break;
+         case TokenType::IDENTIFIER:
+            // check for dupes
+            if (encountered_params.contains(next.lexeme)) {
+               for (auto c : encountered_params) {
+                  std:: cout << "P" << c << std::endl;
+               }
+               parsing_args = false;
+               std::cout << "ERROR: Encountered duplicate parameter name when parsing function arguements" << std::endl;
+            } else {
+               // if no dupes, just add
+               params.push_back(next.lexeme);
+               encountered_params.insert(next.lexeme);
+               // if comma eat comma, otherwise
+               // assume we are done and eat right paren and break
+               eat(TokenType::IDENTIFIER);
+               if (peek().type == TokenType::COMMA) {
+                  eat(TokenType::COMMA);
+               } else {
+                  // assume we're done
+                  eat(TokenType::RIGHTPAREN);
+                  parsing_args = false;
+               }
+            }
+            break;
+      }
+   }
+
+   eat(TokenType::LEFTBRACE);
+   statements = statement_list();
+   eat(TokenType::RIGHTBRACE);
+
+   return new FunctionDecl(start, name, params, statements);
 }

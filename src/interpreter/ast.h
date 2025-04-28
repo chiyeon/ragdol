@@ -188,6 +188,29 @@ struct NoOp : public ASTNode {
    }
 };
 
+struct FunctionDecl : public ASTNode {
+   std::string name;
+   std::vector<std::string> params;
+   StatementList* body;
+
+   FunctionDecl(Token t, const std::string& name, std::vector<std::string> params, StatementList* body)
+      : ASTNode(t), name(name), params(std::move(params)), body(body)
+      {}
+   ~FunctionDecl() {
+      delete body;
+   }
+
+   std::string to_str() override {
+      std::string out = "FunctionDecl<" + name + ", " + std::to_string(params.size()) + " args> {\n";
+
+      out += indent(body->to_str() + "\n}");
+
+      return out;
+   }
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
 template<typename ret>
 struct ASTVisitor {
    /*
@@ -211,4 +234,5 @@ struct ASTVisitor {
    virtual ret visit_block(Block*) = 0;
    virtual ret visit_assignment(Assignment*) = 0;
    virtual ret visit_no_op(NoOp*) = 0;
+   virtual ret visit_function_decl(FunctionDecl*) = 0;
 };
