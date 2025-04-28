@@ -4,30 +4,30 @@
 /*
  * NODE ACCEPT DEF
  */
-Value* BinaryOp::accept(Interpreter& visitor) {
+std::shared_ptr<Value> BinaryOp::accept(Interpreter& visitor) {
    return visitor.visit_binary_op(this);
 }
 
-Value* LiteralInt::accept(Interpreter& visitor) {
+std::shared_ptr<Value> LiteralInt::accept(Interpreter& visitor) {
    return visitor.visit_literal_int(this);
 }
 
-Value* UnaryOp::accept(Interpreter& visitor) {
+std::shared_ptr<Value> UnaryOp::accept(Interpreter& visitor) {
    return visitor.visit_unary_op(this);
 }
 
-Value* Block::accept(Interpreter& visitor) {
+std::shared_ptr<Value> Block::accept(Interpreter& visitor) {
    return visitor.visit_block(this);
 }
 
-Value* Variable::accept(Interpreter& visitor) {
+std::shared_ptr<Value> Variable::accept(Interpreter& visitor) {
    return visitor.visit_variable(this);
 }
 
-Value* Assignment::accept(Interpreter& visitor) {
+std::shared_ptr<Value> Assignment::accept(Interpreter& visitor) {
    return visitor.visit_assignment(this);
 }
 
-Value* NoOp::accept(Interpreter& visitor) {
+std::shared_ptr<Value> NoOp::accept(Interpreter& visitor) {
    return visitor.visit_no_op(this);
 }

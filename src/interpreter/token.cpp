@@ -24,7 +24,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::GTE, "greater_than_or_equal" },
    { TokenType::EQ, "equals" },
    { TokenType::ASSIGN, "assignment" },
-   { TokenType::LET, "let" },
+   { TokenType::VAR, "var" },
    { TokenType::IF, "if" },
    { TokenType::WHILE, "while" },
    { TokenType::FOR, "for" },

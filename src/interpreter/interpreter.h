@@ -5,12 +5,13 @@
 #include "parser.h"
 #include "ast.h"
 #include "value.h"
+#include "scope.h"
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <memory>
 
-class Interpreter : public ASTVisitor<Value*> {
+class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* parse text to ast */
    Lexer lexer;
    Parser parser;
@@ -26,11 +27,23 @@ class Interpreter : public ASTVisitor<Value*> {
    /* pointer to root program of ast */
    ASTNode* ast;
 
+   /* pointer to global scope */
+   std::shared_ptr<Scope> global_scope;
+   /* current scope we are walking through */
+   std::shared_ptr<Scope> current_scope;
+
    bool debug_log = true;
 
+   void enter_new_scope();
+   void exit_scope();
+
+   /* updates var_name, throws if cannot find */
+   void assign_variable(const std::string& var_name, std::shared_ptr<Value> value);
+   /* tries to update, if can't find creates new in current scope */
+   void assign_or_insert_variable(const std::string& var_name, std::shared_ptr<Value> value);
+   std::shared_ptr<Value> find_variable(const std::string& var_name);
+
 public:
-   // temp
-   std::unordered_map<std::string, Value*> variables;
    void print_variables();
 
    Interpreter(std::string src);
@@ -41,13 +54,13 @@ public:
    void interpret();
 
    /* EXPRESSION HANDLERS */
-   Value* visit_literal_int(LiteralInt*) override;
-   Value* visit_binary_op(BinaryOp*) override;
-   Value* visit_unary_op(UnaryOp*) override;
-   Value* visit_variable(Variable*) override;
+   std::shared_ptr<Value> visit_literal_int(LiteralInt*) override;
+   std::shared_ptr<Value> visit_binary_op(BinaryOp*) override;
+   std::shared_ptr<Value> visit_unary_op(UnaryOp*) override;
+   std::shared_ptr<Value> visit_variable(Variable*) override;
 
    /* STATEMENT HANDLERS */
-   Value* visit_block(Block*) override;
-   Value* visit_no_op(NoOp*) override;
-   Value* visit_assignment(Assignment*) override;
+   std::shared_ptr<Value> visit_block(Block*) override;
+   std::shared_ptr<Value> visit_no_op(NoOp*) override;
+   std::shared_ptr<Value> visit_assignment(Assignment*) override;
 };

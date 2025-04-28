@@ -67,16 +67,23 @@ ASTNode* Parser::statement() {
          return empty();
       case TokenType::LEFTBRACE:
          return block();
+      case TokenType::VAR:
+         return assignment_statement(true);
       case TokenType::IDENTIFIER:
-         return assignment_statement();
+         return assignment_statement(false);
    }
 }
 
-ASTNode* Parser::assignment_statement() {
+ASTNode* Parser::assignment_statement(bool new_var) {
    /*
+    * var IDENTIFIER ASSIGN/= Expr
+    *
+    * if new_var is false, instead:
     * IDENTIFIER ASSIGN/= Expr
     */
    Token t = peek();
+
+   if (new_var) eat(TokenType::VAR);
 
    // get variable / handle identifier
    Variable* dest = variable();
@@ -88,7 +95,7 @@ ASTNode* Parser::assignment_statement() {
    // expression target
    ASTNode* target = expr();
 
-   return new Assignment(t, dest, assign_token, target);
+   return new Assignment(t, dest, assign_token, target, new_var);
 }
 
 Variable* Parser::variable() {

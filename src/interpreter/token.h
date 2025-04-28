@@ -13,7 +13,7 @@ enum class TokenType {
    PLUS_EQ, MINUS_EQ, MULT_EQ, DIV_EQ,
    GT, LT, GTE, LTE, EQ,
    ASSIGN,
-   LET,
+   VAR,
    IF,
    WHILE,
    FOR,

@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 /*
  * File includes definitions for AST visitor & nodetypes
@@ -20,7 +21,7 @@ struct ASTNode {
    ASTNode(Token t) : token(t) {}
    virtual ~ASTNode() = default;
 
-   virtual Value* accept(Interpreter& visitor) = 0;
+   virtual std::shared_ptr<Value> accept(Interpreter& visitor) = 0;
 
    virtual std::string to_str() {
       return token.lexeme;
@@ -33,7 +34,7 @@ struct BinaryOp : public ASTNode {
    ASTNode* right;
    
    BinaryOp(Token t, ASTNode* l, Token o, ASTNode* r) : ASTNode(t), left(l), op(o), right(r) {}
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "BinaryOperation<" + left->to_str() + op.lexeme + right->to_str() + ">";
@@ -44,14 +45,14 @@ struct LiteralInt : public ASTNode {
    int value;
 
    LiteralInt(Token t, int value) : ASTNode(t), value(value) {}
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 };
 
 struct UnaryOp : public ASTNode {
    ASTNode* expr;
 
    UnaryOp(Token t, ASTNode* expr) : ASTNode(t), expr(expr) {}
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 };
 
 struct Block : public ASTNode {
@@ -65,7 +66,7 @@ struct Block : public ASTNode {
    Block(Token t, const std::vector<ASTNode*>& statements)
       : ASTNode(t), statements(statements)
       {}
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       std::string out = "Block {\n";
@@ -94,7 +95,7 @@ struct Variable : public ASTNode {
       : ASTNode(t), var_name(t.lexeme)
       {}
 
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
    std::string get_var_name() { return var_name; }
 
    std::string to_str() {
@@ -109,11 +110,15 @@ struct Assignment : public ASTNode {
    Variable* destination;
    Token op;
    ASTNode* target;
+   bool make_new_var;
 
    Assignment(Token t, Variable* destination, Token op, ASTNode* target)
-      : ASTNode(t), destination(destination), op(op), target(target)
+      : ASTNode(t), destination(destination), op(op), target(target), make_new_var(true)
       {}
-   Value* accept(Interpreter& visitor) override;
+   Assignment(Token t, Variable* destination, Token op, ASTNode* target, bool make_new_var)
+      : ASTNode(t), destination(destination), op(op), target(target), make_new_var(make_new_var)
+      {}
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "Assignment<" + destination->to_str() + " = " + target->to_str() + ">";
@@ -122,7 +127,7 @@ struct Assignment : public ASTNode {
 
 struct NoOp : public ASTNode {
    NoOp(Token t) : ASTNode(t) {}
-   Value* accept(Interpreter& visitor) override;
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
       return "NoOp";
@@ -137,7 +142,7 @@ struct ASTVisitor {
     */
 
    /*
-    * EXPRESSIONS (returns value* for instance)
+    * EXPRESSIONS (returns std::shared_ptr<Value> for instance)
     */
    virtual ret visit_binary_op(BinaryOp*) = 0;
    virtual ret visit_literal_int(LiteralInt*) = 0;

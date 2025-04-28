@@ -55,8 +55,13 @@ int main(/*int argc, char* argv[]*/) {
    std::string INPUT = 
       "{\n"
       "  # comment\n"
-      "  x = 20\n"
-      "  y = 10 #yes\n"
+      "  var x = 20\n"
+      "  var y = 10 #yes\n"
+      "  {\n"
+      "     x = 10;\n"
+      "     var z = 20;\n"
+      "     z = 20 * x * 100 * x / 10\n"
+      "  }\n"
       "}";
 
 

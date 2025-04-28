@@ -32,7 +32,7 @@ public:
    ASTNode* block();
    std::vector<ASTNode*> statement_list();
    ASTNode* statement();
-   ASTNode* assignment_statement();
+   ASTNode* assignment_statement(bool new_var = true);
    Variable* variable();
    ASTNode* empty();
 
