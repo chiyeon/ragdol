@@ -188,6 +188,21 @@ std::shared_ptr<Value> Interpreter::visit_variable(Variable* node) {
 std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
    log("Visited Function Declaration: " + node->to_str(), LOG_VERBOSE);
 
+   // make sure function of name doesn't exist (in scope?)
+   auto var = find_variable(node->name);
+
+   if (var != nullptr) {
+      std::cout << "ERROR: cant name function " << node->name << " becasue identifier is taken" << std::endl;
+   } else {
+      // if doesnt exist, establish var as a variable in our current scope
+      auto nv = std::make_shared<Value>(Value::Type::FUNCTION, node);
+      assign_or_insert_variable(node->name, nv);
+
+      print_variables();
+
+      return nv;
+   }
+
    return nullptr;
 }
 

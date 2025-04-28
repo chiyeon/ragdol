@@ -86,7 +86,7 @@ bool Scope::is_global() {
 }
 
 std::string Scope::to_str() {
-   std::string out = "SCOPE\n";
+   std::string out = "";
 
    for (const auto& [var_name, value] : variables) {
       out += "\t" + var_name + "\t = " + value->to_str() + "\n";
