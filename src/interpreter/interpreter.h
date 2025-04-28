@@ -36,7 +36,7 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    static const int LOG_QUIET = 0;
    static const int LOG_NORMAL = 1;
    static const int LOG_VERBOSE = 2;
-   int log_level = LOG_VERBOSE;
+   int log_level = LOG_NORMAL;
    int log_scope = 0; /* tab in per scope */
    void log(std::string, int = LOG_NORMAL, char = '\n');
 

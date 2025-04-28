@@ -35,7 +35,6 @@ class Lexer {
       { "if", TokenType::IF },
       { "while", TokenType::WHILE },
       { "for", TokenType::FOR },
-      { "print", TokenType::PRINT },
       { "true", TokenType::BOOLEAN },
       { "false", TokenType::BOOLEAN },
       { "var", TokenType::VAR },

@@ -1,16 +1,19 @@
 #pragma once
 
+#include "function.h"
+
 #include <variant>
 #include <string>
+#include <memory>
 
 struct FunctionDecl;
 
-typedef std::variant<std::monostate, int, float, FunctionDecl*> Data;
+typedef std::variant<std::monostate, int, float, FunctionDecl*, std::shared_ptr<BuiltinFunction>> Data;
 
 class Value {
 public:
    enum class Type {
-      NIL, INT, FLOAT, FUNCTION
+      NIL, INT, FLOAT, FUNCTION, BULITINFUNCTION
    };
 
 private:
@@ -34,5 +37,6 @@ public:
 
    int get_int();
    FunctionDecl* get_function();
+   std::shared_ptr<BuiltinFunction> get_builtin_function();
    bool is_truthy();
 };

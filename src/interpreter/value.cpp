@@ -20,6 +20,11 @@ std::string Value::to_str() {
             FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
             return "Function<" + (*fn)->name + ">";
          }
+      case Type::BULITINFUNCTION:
+         {
+            auto fn = get_builtin_function();
+            return "BuiltinFunction<" + fn->name + ">";
+         }
    }
 }
 
@@ -55,5 +60,10 @@ int Value::get_int() {
 
 FunctionDecl* Value::get_function() {
    FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
+   return *fn;
+}
+
+std::shared_ptr<BuiltinFunction> Value::get_builtin_function() {
+   auto fn = std::get_if<std::shared_ptr<BuiltinFunction>>(&data);
    return *fn;
 }

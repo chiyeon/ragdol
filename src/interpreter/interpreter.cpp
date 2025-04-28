@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <unordered_map>
+#include <memory>
 
 void Interpreter::log(std::string message, int loglv, char endline) {
    if (loglv > log_level) return;
@@ -50,6 +51,19 @@ Interpreter::Interpreter(std::string src)
 {
    global_scope = std::make_shared<Scope>();
    current_scope = global_scope;
+
+   /* initialize builtin functions */
+
+   // PRINT
+   fndef print_fndef = [](std::vector<std::shared_ptr<Value>> args) -> std::shared_ptr<Value> {
+            for (auto& arg : args) {
+               std::cout << arg->to_str();
+            }
+            std::cout << std::endl;
+            return nullptr;
+         };
+   std::shared_ptr<BuiltinFunction> print_builtin = std::make_shared<BuiltinFunction>(print_fndef);
+   global_scope->assign_or_insert("print", std::make_shared<Value>(Value::Type::BULITINFUNCTION, print_builtin));
 
    tokens = lexer.tokenize();
 
@@ -198,8 +212,6 @@ std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
       auto nv = std::make_shared<Value>(Value::Type::FUNCTION, node);
       assign_or_insert_variable(node->name, nv);
 
-      print_variables();
-
       return nv;
    }
 
@@ -218,8 +230,19 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
       // run function body by accepting body
       // TODO worry about scope
 
-      var->get_function()->body->accept(*this);
-      print_variables();
+      std::vector<std::shared_ptr<Value>> args;
+
+      for (auto& arg : node->arguments) {
+         args.push_back(arg->accept(*this));
+      }
+
+      // if built in, run built in code:
+      if (var->get_type() == Value::Type::BULITINFUNCTION) {
+         var->get_builtin_function()->function(args); 
+      } else if (var->get_type() == Value::Type::FUNCTION) {
+         // todo add args to scope
+         var->get_function()->body->accept(*this);
+      }
 
       if (node->destination != nullptr) {
          // we have a location to return to
