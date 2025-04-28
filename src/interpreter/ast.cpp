@@ -39,3 +39,7 @@ std::shared_ptr<Value> NoOp::accept(Interpreter& visitor) {
 std::shared_ptr<Value> FunctionDecl::accept(Interpreter& visitor) {
    return visitor.visit_function_decl(this);
 }
+
+std::shared_ptr<Value> FunctionCall::accept(Interpreter& visitor) {
+   return visitor.visit_function_call(this);
+}

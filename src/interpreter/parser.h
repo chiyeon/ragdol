@@ -11,6 +11,7 @@ class Parser {
 
    Token advance();
    Token peek();
+   Token peekpeek();
    bool is_at_end();
 
    void eat(TokenType type);
@@ -41,6 +42,7 @@ public:
    ASTNode* expr();
 
    FunctionDecl* function_decl();
+   FunctionCall* function_call();
 
    LiteralInt* lower_literal_int();
 };

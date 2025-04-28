@@ -193,7 +193,7 @@ struct FunctionDecl : public ASTNode {
    std::vector<std::string> params;
    StatementList* body;
 
-   FunctionDecl(Token t, const std::string& name, std::vector<std::string> params, StatementList* body)
+   FunctionDecl(Token t, const std::string& name, std::vector<std::string>&& params, StatementList* body)
       : ASTNode(t), name(name), params(std::move(params)), body(body)
       {}
    ~FunctionDecl() {
@@ -206,6 +206,29 @@ struct FunctionDecl : public ASTNode {
       out += indent(body->to_str() + "\n}");
 
       return out;
+   }
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
+struct FunctionCall : public ASTNode {
+   std::string name;
+   std::vector<ASTNode*> arguments;
+   Variable* destination; // may be nullptr
+
+   FunctionCall(Token t, const std::string& name, std::vector<ASTNode*>&& arguments)
+      : ASTNode(t), name(name), arguments(std::move(arguments)), destination(nullptr)
+   {}
+   FunctionCall(Token t, const std::string& name, std::vector<ASTNode*>&& arguments, Variable* destination)
+      : ASTNode(t), name(name), arguments(std::move(arguments)),destination(destination)
+   {}
+
+   ~FunctionCall() {
+      delete destination;
+   }
+
+   std::string to_str() override {
+      return "FunctionCall<" + name + ">";
    }
 
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
@@ -235,4 +258,5 @@ struct ASTVisitor {
    virtual ret visit_assignment(Assignment*) = 0;
    virtual ret visit_no_op(NoOp*) = 0;
    virtual ret visit_function_decl(FunctionDecl*) = 0;
+   virtual ret visit_function_call(FunctionCall*) = 0;
 };

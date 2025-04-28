@@ -206,6 +206,33 @@ std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
    return nullptr;
 }
 
+std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
+   log("Visited Function Call: " + node->to_str(), LOG_VERBOSE);
+
+   // make sure function exists
+   auto var = find_variable(node->name);
+
+   if (var == nullptr) {
+      std::cout << "ERROR: function named  " << node->name << " doesn't exist" << std::endl;
+   } else {
+      // run function body by accepting body
+      // TODO worry about scope
+
+      var->get_function()->body->accept(*this);
+      print_variables();
+
+      if (node->destination != nullptr) {
+         // we have a location to return to
+         
+         // first make sure we actually return something
+         // then return it from this fn
+         // assignment would call this
+      }
+   }
+
+   return nullptr;
+}
+
 void Interpreter::print_variables() {
    log("VARIABLES:");
    auto p = current_scope;

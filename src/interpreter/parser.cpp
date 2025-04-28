@@ -26,6 +26,10 @@ Token Parser::peek() {
    return tokens.at(current);
 }
 
+Token Parser::peekpeek() {
+   return tokens.at(current + 1);
+}
+
 void Parser::eat(TokenType type) {
    if (peek().type == type) {
       advance();
@@ -71,7 +75,11 @@ ASTNode* Parser::statement() {
       case TokenType::VAR:
          return assignment_statement(true);
       case TokenType::IDENTIFIER:
-         return assignment_statement(false);
+         if (peekpeek().type == TokenType::LEFTPAREN) {
+            return function_call();
+         } else {
+            return assignment_statement(false);
+         }
       case TokenType::FUNCTIONDECL:
          return function_decl();
    }
@@ -182,6 +190,38 @@ ASTNode* Parser::expr() {
    return n;
 }
 
+FunctionCall* Parser::function_call() {
+   /*
+    * identifier aka fn name lparen arbitrary # of agrs rparen
+    */
+
+   std::string fn_name = peek().lexeme;
+   std::vector<ASTNode*> args;
+   Token start = peek();
+
+   eat(TokenType::IDENTIFIER);
+   eat(TokenType::LEFTPAREN);
+
+   // get arbitrary number of arguments
+   // these could literals, vars, expressions, etc so do expr()
+   if (peek().type != TokenType::RIGHTPAREN) {
+      Token next = peek();
+      while (true) {
+         next = peek();
+
+         args.push_back(expr());
+         if (peek().type == TokenType::RIGHTPAREN) {
+            eat(TokenType::RIGHTPAREN);
+            break;
+         } else {
+            eat(TokenType::COMMA);
+         }
+      }
+   }
+
+   return new FunctionCall(start, fn_name, std::move(args));
+}
+
 FunctionDecl* Parser::function_decl() {
    /*
     * fn IDENTIFIER(fn name) lparen, arbitrary # of args, r paren
@@ -249,5 +289,5 @@ FunctionDecl* Parser::function_decl() {
    statements = statement_list();
    eat(TokenType::RIGHTBRACE);
 
-   return new FunctionDecl(start, name, params, statements);
+   return new FunctionDecl(start, name, std::move(params), statements);
 }

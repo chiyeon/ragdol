@@ -52,3 +52,8 @@ int Value::get_int() {
    int* i = std::get_if<int>(&data);
    return *i;
 }
+
+FunctionDecl* Value::get_function() {
+   FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
+   return *fn;
+}

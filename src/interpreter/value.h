@@ -33,5 +33,6 @@ public:
    Data get_data();
 
    int get_int();
+   FunctionDecl* get_function();
    bool is_truthy();
 };
