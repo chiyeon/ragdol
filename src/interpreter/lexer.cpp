@@ -89,7 +89,6 @@ Token Lexer::scan_token() {
 
    if (passed_newline
          && last_token->type != TokenType::STATEMENTEND
-         && last_token->type != TokenType::SINGLELINECOMMENT
       ) {
       return make_token(TokenType::STATEMENTEND);
    }
@@ -116,14 +115,15 @@ Token Lexer::scan_token() {
       case '}': return make_token(TokenType::RIGHTBRACE); break;
       case ';': return make_token(TokenType::STATEMENTEND); break;
       case '#': 
-         Token comment = make_token(TokenType::SINGLELINECOMMENT);
-         return comment;
+         return make_token(TokenType::SINGLELINECOMMENT);
          break;
    }
 
    // literals & identifiers
    if (isdigit(c)) return parse_number();
    if (isalpha(c) || c == '_') return parse_identifier();
+
+   return make_token(TokenType::SINGLELINECOMMENT);
 }
 
 Token Lexer::parse_number() {
@@ -160,7 +160,7 @@ std::vector<Token> Lexer::tokenize() {
       start = current;
 
       Token t = scan_token();
-      std::cout << "found " << t.to_str() << std::endl;
+      //std::cout << "found " << t.to_str() << std::endl;
 
       switch (t.type) {
          default:

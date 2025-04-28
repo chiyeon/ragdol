@@ -20,6 +20,10 @@ std::shared_ptr<Value> Block::accept(Interpreter& visitor) {
    return visitor.visit_block(this);
 }
 
+std::shared_ptr<Value> StatementList::accept(Interpreter& visitor) {
+   return visitor.visit_statement_list(this);
+}
+
 std::shared_ptr<Value> Variable::accept(Interpreter& visitor) {
    return visitor.visit_variable(this);
 }

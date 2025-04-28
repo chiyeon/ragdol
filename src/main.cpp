@@ -6,6 +6,9 @@
 #include <iostream>
 #include <cmath>
 #include <array>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 // System sys;
 
@@ -51,19 +54,27 @@ void update() {
 }
 */
 
-int main(/*int argc, char* argv[]*/) {
-   std::string INPUT = 
-      "{\n"
-      "  # comment\n"
-      "  var x = 20\n"
-      "  var y = 10 #yes\n"
-      "  {\n"
-      "     x = 10;\n"
-      "     var z = 20;\n"
-      "     z = 20 * x * 100 * x / 10\n"
-      "  }\n"
-      "}";
+std::string read_file(char* path) {
+   std::ifstream file(path, std::ios::in | std::ios::binary);
+   if (!file) {
+      std::cerr << "Failed to open file: " << path << std::endl;
+      return "";
+   }
 
+   std::ostringstream buffer;
+   buffer << file.rdbuf();
+
+   return buffer.str();
+}
+
+int main(int argc, char* argv[]) {
+   if (argc < 2) {
+      std::cerr << "USAGE: " << argv[0] << " path/to/file" << std::endl;
+      return 1;
+   }
+
+   std::string INPUT = read_file(argv[1]);
+   if (INPUT.length() == 0) return 1;
 
    std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
    std::cout << "" << INPUT << std::endl;

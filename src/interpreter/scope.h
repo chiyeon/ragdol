@@ -13,9 +13,6 @@ public:
    Scope()
       : parent(nullptr)
       {}
-   Scope(Scope* parent)
-      : parent(parent)
-      {}
    Scope(std::shared_ptr<Scope> parent)
       : parent(parent)
       {}

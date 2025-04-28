@@ -26,6 +26,31 @@ struct ASTNode {
    virtual std::string to_str() {
       return token.lexeme;
    }
+
+   // maybe put somewhere else
+   std::string indent(const std::string& str, int tabs = 1) {
+      /*
+       * indents multi line strings
+       */
+      std::string indent(tabs, '\t');
+      std::string out;
+
+      size_t start = 0;
+      size_t end;
+
+      // indent at newlines
+      while ((end = str.find('\n', start)) != std::string::npos) {
+         out += indent + str.substr(start, end - start + 1);
+         start = end + 1;
+      }
+
+      if (start < str.size()) {
+         // add remaining
+         out += indent + str.substr(start); 
+      }
+
+      return out;
+   }
 };
 
 struct BinaryOp : public ASTNode {
@@ -34,6 +59,10 @@ struct BinaryOp : public ASTNode {
    ASTNode* right;
    
    BinaryOp(Token t, ASTNode* l, Token o, ASTNode* r) : ASTNode(t), left(l), op(o), right(r) {}
+   ~BinaryOp() {
+      delete left;
+      delete right;
+   }
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
@@ -52,37 +81,56 @@ struct UnaryOp : public ASTNode {
    ASTNode* expr;
 
    UnaryOp(Token t, ASTNode* expr) : ASTNode(t), expr(expr) {}
+   ~UnaryOp() {
+      delete expr;
+   }
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
+struct StatementList : public ASTNode {
+   std::vector<ASTNode*> statements;
+
+   StatementList(Token t) : ASTNode(t) {}
+   StatementList(Token t, std::vector<ASTNode*>&& statements)
+      : ASTNode(t), statements(std::move(statements))
+      {}
+
+   ~StatementList() {
+      for (auto t : statements) {
+         delete t;
+      }
+   }
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+
+   std::string to_str() override {
+      std::string out = "Statement List [\n";
+      for (auto s : statements) {
+         out += "\t" + s->to_str() + "\n";
+      }
+      out += "]";
+
+      return indent(out);
+   }
 };
 
 struct Block : public ASTNode {
    /*
-    * Block e.g. "{ ... }"
+    * Block e.g. "{ StatementList }"
     */
-   std::vector<ASTNode*> statements;
+   StatementList* statements;
 
-   Block(Token t) : ASTNode(t) {}
-   /* todo use std::move for speed */
-   Block(Token t, const std::vector<ASTNode*>& statements)
-      : ASTNode(t), statements(statements)
-      {}
+   Block(Token t, StatementList* statements = nullptr) : ASTNode(t), statements(statements) {}
+
+   ~Block() {
+      delete statements;
+   }
+
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
-      std::string out = "Block {\n";
-      for (auto s : statements) {
-         out += "\t" + s->to_str() + "\n";
-      }
-      out += "}";
-
-      return out;
+      return "Block {\n" + indent(statements->to_str() + "\n}");
    }
-
-   /*
-   void set_statements(std::vector<ASTNode*>& statements) {
-      statements = statements;
-   }
-   */
 };
 
 struct Variable : public ASTNode {
@@ -118,6 +166,12 @@ struct Assignment : public ASTNode {
    Assignment(Token t, Variable* destination, Token op, ASTNode* target, bool make_new_var)
       : ASTNode(t), destination(destination), op(op), target(target), make_new_var(make_new_var)
       {}
+
+   ~Assignment() {
+      delete destination;
+      delete target;
+   }
+
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 
    std::string to_str() override {
@@ -153,6 +207,7 @@ struct ASTVisitor {
     * STATEMENTS
     * dont necessarily return anything
     */
+   virtual ret visit_statement_list(StatementList*) = 0;
    virtual ret visit_block(Block*) = 0;
    virtual ret visit_assignment(Assignment*) = 0;
    virtual ret visit_no_op(NoOp*) = 0;

@@ -34,8 +34,7 @@ void Parser::eat(TokenType type) {
 }
 
 ASTNode* Parser::program() {
-   // TODO more here
-   return block(); 
+   return statement_list();
 }
 
 ASTNode* Parser::block() {
@@ -47,7 +46,8 @@ ASTNode* Parser::block() {
    return block;
 }
 
-std::vector<ASTNode*> Parser::statement_list() {
+StatementList* Parser::statement_list() {
+   Token start = peek();
    std::vector<ASTNode*> nodes;
    nodes.push_back(statement());
 
@@ -58,7 +58,7 @@ std::vector<ASTNode*> Parser::statement_list() {
 
    // TODO error check
    
-   return nodes;
+   return new StatementList(start, std::move(nodes));
 }
 
 ASTNode* Parser::statement() {

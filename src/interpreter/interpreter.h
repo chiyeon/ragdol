@@ -32,7 +32,13 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* current scope we are walking through */
    std::shared_ptr<Scope> current_scope;
 
-   bool debug_log = true;
+   /* DEBUG PRINT HELPERS */
+   static const int LOG_QUIET = 0;
+   static const int LOG_NORMAL = 1;
+   static const int LOG_VERBOSE = 2;
+   int log_level = LOG_QUIET;
+   int log_scope = 0; /* tab in per scope */
+   void log(std::string, int = LOG_NORMAL, char = '\n');
 
    void enter_new_scope();
    void exit_scope();
@@ -47,6 +53,7 @@ public:
    void print_variables();
 
    Interpreter(std::string src);
+   ~Interpreter();
 
    std::vector<Token>& get_tokens();
    std::string token_to_str(Token t);
@@ -61,6 +68,7 @@ public:
 
    /* STATEMENT HANDLERS */
    std::shared_ptr<Value> visit_block(Block*) override;
+   std::shared_ptr<Value> visit_statement_list(StatementList*) override;
    std::shared_ptr<Value> visit_no_op(NoOp*) override;
    std::shared_ptr<Value> visit_assignment(Assignment*) override;
 };

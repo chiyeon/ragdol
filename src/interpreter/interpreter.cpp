@@ -6,6 +6,13 @@
 #include <iostream>
 #include <unordered_map>
 
+void Interpreter::log(std::string message, int loglv, char endline) {
+   if (loglv > log_level) return;
+
+   for (int i = 0; i < log_scope; ++i) std::cout << "\t";
+   std::cout << message << endline;
+}
+
 void Interpreter::enter_new_scope() {
    current_scope = std::make_shared<Scope>(current_scope);
 }
@@ -49,6 +56,10 @@ Interpreter::Interpreter(std::string src)
    parser.set_tokens(tokens);
 }
 
+Interpreter::~Interpreter() {
+   delete ast;
+}
+
 ASTNode* Interpreter::parse() {
    ast = parser.parse();
    return ast;
@@ -81,14 +92,14 @@ std::string Interpreter::token_to_str(Token t) {
 }
 
 std::shared_ptr<Value> Interpreter::visit_literal_int(LiteralInt* node) {
-   if (debug_log) std::cout << "Visited literal int: " << node->to_str() << std::endl;
+   log("Visited literal int: " + node->to_str(), LOG_VERBOSE);
 
    auto v = std::make_shared<Value>(Value::Type::INT, node->value);
    return v;
 }
 
 std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
-   if (debug_log) std::cout << "Visited binary operation: " << node->to_str() << std::endl;
+   log("Visited binary operation: " +node->to_str(), LOG_VERBOSE);
 
    std::shared_ptr<Value> left = node->left->accept(*this);
    std::shared_ptr<Value> right = node->right->accept(*this);
@@ -109,7 +120,7 @@ std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
 }
 
 std::shared_ptr<Value> Interpreter::visit_unary_op(UnaryOp* node) {
-   if (debug_log) std::cout << "Visited unary op: " << node->to_str() << std::endl;
+   log("Visited unary op: " + node->to_str(), LOG_VERBOSE);
 
    std::shared_ptr<Value> expr = node->expr->accept(*this);
 
@@ -123,29 +134,32 @@ std::shared_ptr<Value> Interpreter::visit_unary_op(UnaryOp* node) {
    }
 }
 
-std::shared_ptr<Value> Interpreter::visit_block(Block* node) {
-   if (debug_log) std::cout << "Visited Block: " << node->to_str() << std::endl;
-
-   enter_new_scope();
+std::shared_ptr<Value> Interpreter::visit_statement_list(StatementList* node) {
+   log("Visited statement list:" + node->to_str(), LOG_VERBOSE);
 
    for (auto n : node->statements) {
       n->accept(*this);
    }
 
-   print_variables();
+   return nullptr;
+}
 
+std::shared_ptr<Value> Interpreter::visit_block(Block* node) {
+   log("Visited block: " + node->to_str(), LOG_VERBOSE);
+
+   enter_new_scope();
+   node->statements->accept(*this);
    exit_scope();
 
    return nullptr;
 }
 
 std::shared_ptr<Value> Interpreter::visit_no_op(NoOp* node) {
-   if (debug_log) std::cout << "Visited NoOp" << std::endl;
    return nullptr;
 }
 
 std::shared_ptr<Value> Interpreter::visit_assignment(Assignment* node) {
-   if (debug_log) std::cout << "Visited Assignment: " << node->to_str() << std::endl;
+   log("Visited assignment: " + node->to_str(), LOG_VERBOSE);
 
    // assign variable to value
    auto nv = node->target->accept(*this);
@@ -159,7 +173,7 @@ std::shared_ptr<Value> Interpreter::visit_assignment(Assignment* node) {
 }
 
 std::shared_ptr<Value> Interpreter::visit_variable(Variable* node) {
-   if (debug_log) std::cout << "Visited Variable: " << node->to_str() << std::endl;
+   log("Visited variable: " + node->to_str(), LOG_VERBOSE);
    
    // get and return value
    auto var = find_variable(node->get_var_name());
@@ -172,12 +186,19 @@ std::shared_ptr<Value> Interpreter::visit_variable(Variable* node) {
 }
 
 void Interpreter::print_variables() {
-   std::cout << "VARIABLES:" << std::endl;
+   log("VARIABLES:");
    auto p = current_scope;
    int num = 0;
+
+   int prev_scope = log_scope;
+
    while (p != nullptr) {
-      std::cout << "SCOPE #" << num << std::endl;
-      std::cout << p->to_str() << std::endl;
+      log_scope++;
+      num++;
+      log("SCOPE #" + num);
+      log(p->to_str());
       p = p->get_parent();
    }
+
+   log_scope = prev_scope;
 }

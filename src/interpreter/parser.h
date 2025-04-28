@@ -30,7 +30,7 @@ public:
 
    ASTNode* program();
    ASTNode* block();
-   std::vector<ASTNode*> statement_list();
+   StatementList* statement_list();
    ASTNode* statement();
    ASTNode* assignment_statement(bool new_var = true);
    Variable* variable();
