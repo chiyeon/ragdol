@@ -57,7 +57,7 @@ Interpreter::Interpreter(std::string src)
    // PRINT
    fndef print_fndef = [](std::vector<std::shared_ptr<Value>> args) -> std::shared_ptr<Value> {
             for (auto& arg : args) {
-               std::cout << arg->to_str();
+               std::cout << arg->to_str() + " ";
             }
             std::cout << std::endl;
             return nullptr;
