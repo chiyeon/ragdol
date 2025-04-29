@@ -41,10 +41,6 @@ public:
    ASTNode* term();
    ASTNode* expr();
 
-
-
    FunctionDecl* function_decl();
    FunctionCall* function_call();
-
-   LiteralInt* lower_literal_int();
 };

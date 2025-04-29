@@ -8,6 +8,10 @@ std::shared_ptr<Value> BinaryOp::accept(Interpreter& visitor) {
    return visitor.visit_binary_op(this);
 }
 
+std::shared_ptr<Value> Literal::accept(Interpreter& visitor) {
+   return visitor.visit_literal(this);
+}
+
 std::shared_ptr<Value> LiteralInt::accept(Interpreter& visitor) {
    return visitor.visit_literal_int(this);
 }

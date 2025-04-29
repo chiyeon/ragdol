@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 enum class TokenType {
-   DOUBLE,
+   FLOAT,
    INTEGER,
    STRING,
    BOOLEAN,

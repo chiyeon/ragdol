@@ -62,6 +62,7 @@ public:
 
    /* EXPRESSION HANDLERS */
    std::shared_ptr<Value> visit_literal_int(LiteralInt*) override;
+   std::shared_ptr<Value> visit_literal(Literal*) override;
    std::shared_ptr<Value> visit_binary_op(BinaryOp*) override;
    std::shared_ptr<Value> visit_unary_op(UnaryOp*) override;
    std::shared_ptr<Value> visit_variable(Variable*) override;

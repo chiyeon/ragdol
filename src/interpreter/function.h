@@ -29,4 +29,8 @@ struct BuiltinFunction {
       : function(function)
    {}
 
+   std::string to_str() {
+      return "BuiltinFunction<" + name + ">";
+   }
+
 };

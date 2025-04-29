@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 const std::unordered_map<TokenType, std::string> Token::type_to_str = {
-   { TokenType::DOUBLE, "double" },
+   { TokenType::FLOAT, "float" },
    { TokenType::INTEGER, "integer" },
    { TokenType::STRING, "string" },
    { TokenType::BOOLEAN, "boolean" },

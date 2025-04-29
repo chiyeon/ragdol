@@ -137,7 +137,13 @@ ASTNode* Parser::factor() {
          return new UnaryOp(t, factor());
       case TokenType::INTEGER:
          eat(TokenType::INTEGER);
-         return new LiteralInt(t, std::atoi(t.lexeme.c_str()));
+         return new Literal(t, Value::make(Value::Type::INT, std::stoi(t.lexeme)));
+      case TokenType::FLOAT:
+         eat(TokenType::FLOAT);
+         return new Literal(t, Value::make(Value::Type::FLOAT, std::stof(t.lexeme)));
+      case TokenType::STRING:
+         eat(TokenType::STRING);
+         return new Literal(t, Value::make(Value::Type::STRING, t.lexeme));
       case TokenType::LEFTPAREN:
          eat(TokenType::LEFTPAREN);
          ASTNode* val = expr();
@@ -167,15 +173,6 @@ ASTNode* Parser::term() {
 
    return n;
 }
-
-LiteralInt* Parser::lower_literal_int() {
-   Token t = advance();
-   LiteralInt* li = new LiteralInt(t, std::atoi(t.lexeme.c_str()));
-
-   return li;
-}
-
-
 
 ASTNode* Parser::expr() {
    ASTNode* n = term();

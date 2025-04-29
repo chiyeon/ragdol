@@ -70,6 +70,16 @@ struct BinaryOp : public ASTNode {
    }
 };
 
+struct Literal : public ASTNode {
+   std::shared_ptr<Value> value;
+
+   Literal(Token t, std::shared_ptr<Value> value)
+      : ASTNode(t), value(value)
+   {}
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
 struct LiteralInt : public ASTNode {
    int value;
 
@@ -246,6 +256,7 @@ struct ASTVisitor {
     */
    virtual ret visit_binary_op(BinaryOp*) = 0;
    virtual ret visit_literal_int(LiteralInt*) = 0;
+   virtual ret visit_literal(Literal*) = 0;
    virtual ret visit_unary_op(UnaryOp*) = 0;
    virtual ret visit_variable(Variable*) = 0;
 

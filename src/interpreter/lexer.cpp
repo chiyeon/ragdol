@@ -172,7 +172,7 @@ Token Lexer::parse_number() {
    if (peek() == '.' && isdigit(peekpeek())) {
       advance();
       while (isdigit(peek())) advance();
-      return make_token(TokenType::DOUBLE);
+      return make_token(TokenType::FLOAT);
    }
 
    return make_token(TokenType::INTEGER);

@@ -8,13 +8,38 @@
 
 struct FunctionDecl;
 
-typedef std::variant<std::monostate, int, float, FunctionDecl*, std::shared_ptr<BuiltinFunction>> Data;
+typedef std::variant<std::monostate, int, float, std::string, FunctionDecl*, std::shared_ptr<BuiltinFunction>> Data;
 
 class Value {
 public:
    enum class Type {
-      NIL, INT, FLOAT, FUNCTION, BULITINFUNCTION
+      NIL, INT, FLOAT, STRING, FUNCTION, BUILTINFUNCTION
    };
+
+   static std::shared_ptr<Value> make(Type type, Data data) {
+      return std::make_shared<Value>(type, data);
+   }
+
+   static std::shared_ptr<Value> make(Type type) {
+      return std::make_shared<Value>(type);
+   }
+
+   static std::string type_to_str(Type type) {
+      switch (type) {
+         default:
+            return "null";
+         case Type::INT:
+            return "integer";
+         case Type::FLOAT:
+            return "float";
+         case Type::STRING:
+            return "string";
+         case Type::FUNCTION:
+            return "function";
+         case Type::BUILTINFUNCTION:
+            return "builtinfunction";
+      }
+   }
 
 private:
    Type type;
@@ -34,9 +59,11 @@ public:
 
    Type get_type();
    Data get_data();
-
-   int get_int();
-   FunctionDecl* get_function();
-   std::shared_ptr<BuiltinFunction> get_builtin_function();
    bool is_truthy();
+
+   int get_as_int();
+   float get_as_float();
+   std::string get_as_str();
+   FunctionDecl* get_as_function();
+   std::shared_ptr<BuiltinFunction> get_as_builtin_function();
 };

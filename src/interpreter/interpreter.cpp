@@ -63,7 +63,7 @@ Interpreter::Interpreter(std::string src)
             return nullptr;
          };
    std::shared_ptr<BuiltinFunction> print_builtin = std::make_shared<BuiltinFunction>(print_fndef);
-   global_scope->assign_or_insert("print", std::make_shared<Value>(Value::Type::BULITINFUNCTION, print_builtin));
+   global_scope->assign_or_insert("print", Value::make(Value::Type::BUILTINFUNCTION, print_builtin));
 
    tokens = lexer.tokenize();
 
@@ -96,7 +96,7 @@ std::vector<Token>& Interpreter::get_tokens() {
    std::cout << ast->to_str() << std::endl;
 
    std::shared_ptr<Value> v = visit_binary_op((BinaryOp*)ast);
-   std::cout << v->get_int() << std::endl;
+   std::cout << v->get_as_int() << std::endl;
    */
    return tokens;
 }
@@ -108,8 +108,16 @@ std::string Interpreter::token_to_str(Token t) {
 std::shared_ptr<Value> Interpreter::visit_literal_int(LiteralInt* node) {
    log("Visited literal int: " + node->to_str(), LOG_VERBOSE);
 
-   auto v = std::make_shared<Value>(Value::Type::INT, node->value);
+   auto v = Value::make(Value::Type::INT, node->value);
    return v;
+}
+
+std::shared_ptr<Value> Interpreter::visit_literal(Literal* node) {
+   log("Visited literal " + node->to_str(), LOG_VERBOSE);
+
+   // todo 
+   // either copy or reference based on type
+   return node->value;
 }
 
 std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
@@ -121,15 +129,15 @@ std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
    // for now assume these are ints
    switch(node->op.type) {
       case TokenType::PLUS:
-         return std::make_shared<Value>(Value::Type::INT, left->get_int() + right->get_int());
+         return Value::make(Value::Type::INT, left->get_as_int() + right->get_as_int());
       case TokenType::MINUS:
-         return std::make_shared<Value>(Value::Type::INT, left->get_int() - right->get_int());
+         return Value::make(Value::Type::INT, left->get_as_int() - right->get_as_int());
       case TokenType::MULT:
-         return std::make_shared<Value>(Value::Type::INT, left->get_int() * right->get_int());
+         return Value::make(Value::Type::INT, left->get_as_int() * right->get_as_int());
       case TokenType::DIV:
-         return std::make_shared<Value>(Value::Type::INT, left->get_int() / right->get_int());
+         return Value::make(Value::Type::INT, left->get_as_int() / right->get_as_int());
       default:
-         return std::make_shared<Value>(Value::Type::NIL);
+         return Value::make(Value::Type::NIL);
    }
 }
 
@@ -140,9 +148,9 @@ std::shared_ptr<Value> Interpreter::visit_unary_op(UnaryOp* node) {
 
    switch (node->token.type) {
       case TokenType::PLUS:
-         return std::make_shared<Value>(Value::Type::INT, +expr->get_int());
+         return Value::make(Value::Type::INT, +expr->get_as_int());
       case TokenType::MINUS:
-         return std::make_shared<Value>(Value::Type::INT, -expr->get_int());
+         return Value::make(Value::Type::INT, -expr->get_as_int());
       default:
          std::cout << "Error" << std::endl;
    }
@@ -209,7 +217,7 @@ std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
       std::cout << "ERROR: cant name function " << node->name << " becasue identifier is taken" << std::endl;
    } else {
       // if doesnt exist, establish var as a variable in our current scope
-      auto nv = std::make_shared<Value>(Value::Type::FUNCTION, node);
+      auto nv = Value::make(Value::Type::FUNCTION, node);
       assign_or_insert_variable(node->name, nv);
 
       return nv;
@@ -237,11 +245,11 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
       }
 
       // if built in, run built in code:
-      if (var->get_type() == Value::Type::BULITINFUNCTION) {
-         var->get_builtin_function()->function(args); 
+      if (var->get_type() == Value::Type::BUILTINFUNCTION) {
+         var->get_as_builtin_function()->function(args); 
       } else if (var->get_type() == Value::Type::FUNCTION) {
          // todo add args to scope
-         var->get_function()->body->accept(*this);
+         var->get_as_function()->body->accept(*this);
       }
 
       if (node->destination != nullptr) {

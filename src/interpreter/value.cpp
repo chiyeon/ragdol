@@ -7,23 +7,23 @@ std::string Value::to_str() {
          return "NULL";
       case Type::INT:
          {
-            int* i = std::get_if<int>(&data);
-            return std::to_string(*i);
+            return std::to_string(get_as_int());
          }
       case Type::FLOAT:
          {
-            float* f = std::get_if<float>(&data);
-            return std::to_string(*f);
+            return std::to_string(get_as_float());
          }
       case Type::FUNCTION:
          {
-            FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
-            return "Function<" + (*fn)->name + ">";
+            return get_as_function()->to_str();
          }
-      case Type::BULITINFUNCTION:
+      case Type::STRING:
          {
-            auto fn = get_builtin_function();
-            return "BuiltinFunction<" + fn->name + ">";
+            return get_as_str(); 
+         }
+      case Type::BUILTINFUNCTION:
+         {
+            return get_as_builtin_function()->to_str();
          }
    }
 }
@@ -53,17 +53,27 @@ bool Value::is_truthy() {
    }
 }
 
-int Value::get_int() {
+int Value::get_as_int() {
    int* i = std::get_if<int>(&data);
    return *i;
 }
 
-FunctionDecl* Value::get_function() {
+float Value::get_as_float() {
+   float* f = std::get_if<float>(&data);
+   return *f;
+}
+
+std::string Value::get_as_str() {
+   std::string* s = std::get_if<std::string>(&data);
+   return *s;
+}
+
+FunctionDecl* Value::get_as_function() {
    FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
    return *fn;
 }
 
-std::shared_ptr<BuiltinFunction> Value::get_builtin_function() {
+std::shared_ptr<BuiltinFunction> Value::get_as_builtin_function() {
    auto fn = std::get_if<std::shared_ptr<BuiltinFunction>>(&data);
    return *fn;
 }
