@@ -31,7 +31,7 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    std::shared_ptr<Scope> global_scope;
    /* current scope we are walking through */
    std::shared_ptr<Scope> current_scope;
-
+public:
    /* DEBUG PRINT HELPERS */
    static const int LOG_QUIET = 0;
    static const int LOG_NORMAL = 1;
@@ -40,6 +40,7 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    int log_scope = 0; /* tab in per scope */
    void log(std::string, int = LOG_NORMAL, char = '\n');
 
+private:
    void enter_new_scope();
    void exit_scope();
 

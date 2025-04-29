@@ -61,7 +61,7 @@ StatementList* Parser::statement_list() {
       nodes.push_back(statement());
    }
 
-   std::cout << "Ended because enconutered " << peek().to_str() << std::endl;
+   //std::cout << "Ended because enconutered " << peek().to_str() << std::endl;
 
    // TODO error check
    
@@ -69,7 +69,7 @@ StatementList* Parser::statement_list() {
 }
 
 ASTNode* Parser::statement() {
-   std::cout << "new statement starting line " << peek().line << std::endl;
+   //std::cout << "new statement starting line " << peek().line << std::endl;
    switch (peek().type) {
       default:
          return empty();
@@ -263,7 +263,7 @@ FunctionDecl* Parser::function_decl() {
             // check for dupes
             if (encountered_params.contains(next.lexeme)) {
                for (auto c : encountered_params) {
-                  std:: cout << "P" << c << std::endl;
+                  //std:: cout << "P" << c << std::endl;
                }
                parsing_args = false;
                std::cout << "ERROR: Encountered duplicate parameter name when parsing function arguements" << std::endl;

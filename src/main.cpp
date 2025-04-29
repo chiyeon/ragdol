@@ -27,6 +27,7 @@ const Sprite TEST_TEX = {
 
 int x = SCREEN_WIDTH / 2;
 int y = SCREEN_HEIGHT / 2;
+int loglevel = 0;
 
 /*
 void update() {
@@ -73,13 +74,20 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
+   if (argc >= 3) {
+      loglevel = atoi(argv[2]);
+   }
+
    std::string INPUT = read_file(argv[1]);
    if (INPUT.length() == 0) return 1;
 
-   std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
-   std::cout << "" << INPUT << std::endl;
+   if (loglevel > 0) {
+      std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
+      std::cout << "" << INPUT << std::endl;
+   }
 
    Interpreter interpreter(INPUT);
+   interpreter.log_level = loglevel;
    auto tokens = interpreter.get_tokens();
 
    /*
@@ -91,13 +99,20 @@ int main(int argc, char* argv[]) {
    std::cout << std::endl;
    */
 
-   std::cout << "Parsed AST:" << std::endl;
    ASTNode* ast = interpreter.parse();
-   std::cout << ast->to_str() << std::endl;
 
-   std::cout << "Interpreting..." << std::endl;
+   if (loglevel > 0) {
+      std::cout << "Parsed AST:" << std::endl;
+      std::cout << ast->to_str() << std::endl;
+
+      std::cout << "Interpreting..." << std::endl;
+   }
+
    interpreter.interpret();
-   interpreter.print_variables();
+
+   if (loglevel > 0) {
+      interpreter.print_variables();
+   }
 
    /*
    sys.set_update_function(update);
