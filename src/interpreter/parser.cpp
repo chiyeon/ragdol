@@ -61,12 +61,15 @@ StatementList* Parser::statement_list() {
       nodes.push_back(statement());
    }
 
+   std::cout << "Ended because enconutered " << peek().to_str() << std::endl;
+
    // TODO error check
    
    return new StatementList(start, std::move(nodes));
 }
 
 ASTNode* Parser::statement() {
+   std::cout << "new statement starting line " << peek().line << std::endl;
    switch (peek().type) {
       default:
          return empty();
@@ -208,13 +211,14 @@ FunctionCall* Parser::function_call() {
 
          args.push_back(expr());
          if (peek().type == TokenType::RIGHTPAREN) {
-            eat(TokenType::RIGHTPAREN);
             break;
          } else {
             eat(TokenType::COMMA);
          }
       }
    }
+
+   eat(TokenType::RIGHTPAREN);
 
    return new FunctionCall(start, fn_name, std::move(args));
 }

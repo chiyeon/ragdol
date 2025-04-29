@@ -200,7 +200,7 @@ std::vector<Token> Lexer::tokenize() {
       start = current;
 
       Token t = scan_token();
-      //std::cout << "found " << t.to_str() << std::endl;
+      std::cout << "found " << t.to_str() << std::endl;
 
       switch (t.type) {
          default:
