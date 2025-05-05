@@ -40,6 +40,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::SINGLELINECOMMENT, "single_line_comment" },
    { TokenType::STATEMENTEND, "statement_end" },
    { TokenType::FUNCTIONDECL, "function_decl" },
+   { TokenType::COMMA, "comma" },
 };
 
 std::string Token::to_str() {

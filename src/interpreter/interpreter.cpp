@@ -241,8 +241,24 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
       if (var->get_type() == Value::Type::BUILTINFUNCTION) {
          var->get_as_builtin_function()->function(args); 
       } else if (var->get_type() == Value::Type::FUNCTION) {
-         // todo add args to scope
+         // get function info
+         FunctionDecl* fn_info = var->get_as_function();
+
+         // get new function specific scope
+         // TODO base it off of scope when declared instead of global
+         std::shared_ptr<Scope> prev_scope = current_scope;
+         current_scope = std::make_shared<Scope>(global_scope);
+
+         // to this new scope, add our args
+         for (int i = 0; i < args.size(); ++i) {
+            current_scope->assign_or_insert(fn_info->params[i], args[i]);
+         }
+
+         // run code
          var->get_as_function()->body->accept(*this);
+
+         // return our scope to previous
+         current_scope = prev_scope;
       }
 
       if (node->destination != nullptr) {
