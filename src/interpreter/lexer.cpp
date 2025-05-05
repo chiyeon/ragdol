@@ -158,13 +158,15 @@ Token Lexer::scan_token() {
       case '\'':
       case '\"': 
           return parse_string(); break;
+      case EOF:
+          return make_token(TokenType::ENDOFFILE);
    }
 
    // literals & identifiers
    if (isdigit(c)) return parse_number();
    if (isalpha(c) || c == '_') return parse_identifier();
 
-   std::cout << "hmm this is a problem: " << c << std::endl;
+   std::cout << "hmm this is a problem: \"" << c << "\"" << std::endl;
 
    return make_token(TokenType::EMPTY);
 }
