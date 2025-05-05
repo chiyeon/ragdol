@@ -105,13 +105,6 @@ std::string Interpreter::token_to_str(Token t) {
    return Token::type_to_str.at(t.type);
 }
 
-std::shared_ptr<Value> Interpreter::visit_literal_int(LiteralInt* node) {
-   log("Visited literal int: " + node->to_str(), LOG_VERBOSE);
-
-   auto v = Value::make(Value::Type::INT, node->value);
-   return v;
-}
-
 std::shared_ptr<Value> Interpreter::visit_literal(Literal* node) {
    log("Visited literal " + node->to_str(), LOG_VERBOSE);
 

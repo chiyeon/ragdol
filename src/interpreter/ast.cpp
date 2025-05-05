@@ -12,10 +12,6 @@ std::shared_ptr<Value> Literal::accept(Interpreter& visitor) {
    return visitor.visit_literal(this);
 }
 
-std::shared_ptr<Value> LiteralInt::accept(Interpreter& visitor) {
-   return visitor.visit_literal_int(this);
-}
-
 std::shared_ptr<Value> UnaryOp::accept(Interpreter& visitor) {
    return visitor.visit_unary_op(this);
 }

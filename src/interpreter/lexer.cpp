@@ -116,6 +116,7 @@ Token Lexer::parse_string() {
 }
 
 Token Lexer::scan_token() {
+   if (is_at_end()) return make_token(TokenType::EMPTY);
    // if our last token wasn't STATEMENTEND or SINGLELINECOMMENT and we passed a newline
    // add one to our vectorlist
    
@@ -163,7 +164,9 @@ Token Lexer::scan_token() {
    if (isdigit(c)) return parse_number();
    if (isalpha(c) || c == '_') return parse_identifier();
 
-   return make_token(TokenType::SINGLELINECOMMENT);
+   std::cout << "hmm this is a problem: " << c << std::endl;
+
+   return make_token(TokenType::EMPTY);
 }
 
 Token Lexer::parse_number() {
@@ -200,17 +203,20 @@ std::vector<Token> Lexer::tokenize() {
       start = current;
 
       Token t = scan_token();
-      //std::cout << "found " << t.to_str() << std::endl;
+      std::cout << "found " << t.to_str();
 
       switch (t.type) {
          default:
             tokens.push_back(t);
          case TokenType::ENDOFFILE:
+         case TokenType::EMPTY:
             break;
          case TokenType::SINGLELINECOMMENT:
             skip_until_newline();
             break;
       }
+
+      std::cout << " finished" << std::endl;
       
    }
 

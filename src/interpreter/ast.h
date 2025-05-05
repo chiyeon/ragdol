@@ -80,13 +80,6 @@ struct Literal : public ASTNode {
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 };
 
-struct LiteralInt : public ASTNode {
-   int value;
-
-   LiteralInt(Token t, int value) : ASTNode(t), value(value) {}
-   std::shared_ptr<Value> accept(Interpreter& visitor) override;
-};
-
 struct UnaryOp : public ASTNode {
    ASTNode* expr;
 
@@ -234,6 +227,10 @@ struct FunctionCall : public ASTNode {
    {}
 
    ~FunctionCall() {
+      for (auto n : arguments) {
+         delete n;
+      }
+
       delete destination;
    }
 
@@ -255,7 +252,6 @@ struct ASTVisitor {
     * EXPRESSIONS (returns std::shared_ptr<Value> for instance)
     */
    virtual ret visit_binary_op(BinaryOp*) = 0;
-   virtual ret visit_literal_int(LiteralInt*) = 0;
    virtual ret visit_literal(Literal*) = 0;
    virtual ret visit_unary_op(UnaryOp*) = 0;
    virtual ret visit_variable(Variable*) = 0;
