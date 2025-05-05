@@ -45,6 +45,7 @@ private:
    void exit_scope();
 
    /* updates var_name, throws if cannot find */
+   void assign_or_insert_in_scope(const std::string&, std::shared_ptr<Value>);
    void assign_variable(const std::string& var_name, std::shared_ptr<Value> value);
    /* tries to update, if can't find creates new in current scope */
    void assign_or_insert_variable(const std::string& var_name, std::shared_ptr<Value> value);

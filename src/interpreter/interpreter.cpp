@@ -24,6 +24,14 @@ void Interpreter::exit_scope() {
    }
 }
 
+void Interpreter::assign_or_insert_in_scope(const std::string& var_name, std::shared_ptr<Value> value) {
+   /*
+    * assigns or inserts a variable ONLY in this current scope, replacing
+    * if it already exists
+    */
+   current_scope->force_insert(var_name, value);
+}
+
 void Interpreter::assign_variable(const std::string& var_name, std::shared_ptr<Value> value) {
    /*
     * assigns variable backwards to closest scope, throwing error
@@ -179,7 +187,7 @@ std::shared_ptr<Value> Interpreter::visit_assignment(Assignment* node) {
    // assign variable to value
    auto nv = node->target->accept(*this);
    if (node->make_new_var) {
-      assign_or_insert_variable(node->destination->get_var_name(), nv);
+      assign_or_insert_in_scope(node->destination->get_var_name(), nv);
    } else {
       assign_variable(node->destination->get_var_name(), nv);
    }
@@ -251,7 +259,7 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
 
          // to this new scope, add our args
          for (int i = 0; i < args.size(); ++i) {
-            current_scope->assign_or_insert(fn_info->params[i], args[i]);
+            assign_or_insert_in_scope(fn_info->params[i], args[i]);
          }
 
          // run code
