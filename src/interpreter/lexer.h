@@ -40,6 +40,7 @@ class Lexer {
       { "false", TokenType::BOOLEAN },
       { "var", TokenType::VAR },
       { "fn", TokenType::FUNCTIONDECL },
+      { "return", TokenType::RETURN }
    };
 
 public:

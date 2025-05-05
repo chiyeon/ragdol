@@ -41,6 +41,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::STATEMENTEND, "statement_end" },
    { TokenType::FUNCTIONDECL, "function_decl" },
    { TokenType::COMMA, "comma" },
+   { TokenType::RETURN, "return" },
 };
 
 std::string Token::to_str() {

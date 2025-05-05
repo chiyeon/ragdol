@@ -217,25 +217,45 @@ struct FunctionDecl : public ASTNode {
 struct FunctionCall : public ASTNode {
    std::string name;
    std::vector<ASTNode*> arguments;
-   Variable* destination; // may be nullptr
+   bool returns; // do we return a val or not
+   //Variable* destination; // may be nullptr
 
    FunctionCall(Token t, const std::string& name, std::vector<ASTNode*>&& arguments)
-      : ASTNode(t), name(name), arguments(std::move(arguments)), destination(nullptr)
+      : ASTNode(t), name(name), arguments(std::move(arguments)), returns(false)
    {}
-   FunctionCall(Token t, const std::string& name, std::vector<ASTNode*>&& arguments, Variable* destination)
-      : ASTNode(t), name(name), arguments(std::move(arguments)),destination(destination)
+   FunctionCall(Token t, const std::string& name, std::vector<ASTNode*>&& arguments, bool returns)
+      : ASTNode(t), name(name), arguments(std::move(arguments)), returns(returns)
    {}
 
    ~FunctionCall() {
       for (auto n : arguments) {
          delete n;
       }
-
-      delete destination;
    }
 
    std::string to_str() override {
       return "FunctionCall<" + name + ">";
+   }
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
+struct ReturnStatement : public ASTNode {
+   ASTNode* value;
+
+   ReturnStatement(Token t, ASTNode* value)
+      : ASTNode(t), value(value)
+   {}
+   ReturnStatement(Token t)
+      : ASTNode(t), value(nullptr)
+   {}
+
+   ~ReturnStatement() {
+      if (value != nullptr) delete value;
+   }
+
+   std::string to_str() override {
+      return "Return: " + (value != nullptr ? value->to_str() : "Nothing");
    }
 
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
@@ -255,6 +275,7 @@ struct ASTVisitor {
    virtual ret visit_literal(Literal*) = 0;
    virtual ret visit_unary_op(UnaryOp*) = 0;
    virtual ret visit_variable(Variable*) = 0;
+   virtual ret visit_return(ReturnStatement*) = 0;
 
    /*
     * STATEMENTS

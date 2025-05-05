@@ -85,6 +85,8 @@ ASTNode* Parser::statement() {
          }
       case TokenType::FUNCTIONDECL:
          return function_decl();
+      case TokenType::RETURN:
+         return return_statement();
    }
 }
 
@@ -112,6 +114,33 @@ ASTNode* Parser::assignment_statement(bool new_var) {
    return new Assignment(t, dest, assign_token, target, new_var);
 }
 
+ReturnStatement* Parser::return_statement() {
+   /*
+    * return EXPR?
+    */
+
+   Token t = peek();
+   eat(TokenType::RETURN);
+
+   // parse argument if there
+   ASTNode* ret_value = nullptr;
+   if (peek().type != TokenType::STATEMENTEND) {
+      // try to parse argument
+      ret_value = expr();
+      //advance();
+
+      
+      // TODO replace this
+      // just double check make sure the statement is ending
+      if (peek().type != TokenType::STATEMENTEND) {
+         std::cout << "ERROR: Expected statement end" << std::endl;
+      }
+      
+   }
+
+   return new ReturnStatement(t, ret_value);
+}
+
 Variable* Parser::variable() {
    Variable* n = new Variable(peek());
    eat(TokenType::IDENTIFIER);
@@ -132,6 +161,14 @@ ASTNode* Parser::factor() {
          /* TODO move this somewhere else? */
          return variable();
          break;
+      case TokenType::IDENTIFIER:
+         if (peekpeek().type == TokenType::LEFTPAREN) {
+            // function call
+            return function_call(true);
+         } else {
+            // otherwise variable
+            return variable();
+         }
       case TokenType::PLUS:
          eat(TokenType::PLUS);
          return new UnaryOp(t, factor());
@@ -190,7 +227,7 @@ ASTNode* Parser::expr() {
    return n;
 }
 
-FunctionCall* Parser::function_call() {
+FunctionCall* Parser::function_call(bool returning) {
    /*
     * identifier aka fn name lparen arbitrary # of agrs rparen
     */
@@ -220,7 +257,7 @@ FunctionCall* Parser::function_call() {
 
    eat(TokenType::RIGHTPAREN);
 
-   return new FunctionCall(start, fn_name, std::move(args));
+   return new FunctionCall(start, fn_name, std::move(args), returning);
 }
 
 FunctionDecl* Parser::function_decl() {

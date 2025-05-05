@@ -31,7 +31,8 @@ enum class TokenType {
    RIGHTBRACE,
    STATEMENTEND, /* semi colon or end of line */
    SINGLELINECOMMENT,
-   ENDOFFILE
+   ENDOFFILE,
+   RETURN
 };
 
 struct Token {

@@ -208,6 +208,22 @@ std::shared_ptr<Value> Interpreter::visit_variable(Variable* node) {
    }
 }
 
+std::shared_ptr<Value> Interpreter::visit_return(ReturnStatement* node) {
+   log("Visited return: " + node->to_str(), LOG_VERBOSE);
+
+   // if we have a return value, get it
+   std::shared_ptr<Value> ret_value = node->value != nullptr ? node->value->accept(*this) : nullptr;
+
+   // TODO break us out of whatever statemnets we're in and return this function
+
+   // add to return buffer
+   return_buffer.push(ret_value);
+
+   // don't really need
+   return ret_value;
+
+}
+
 std::shared_ptr<Value> Interpreter::visit_function_decl(FunctionDecl* node) {
    log("Visited Function Declaration: " + node->to_str(), LOG_VERBOSE);
 
@@ -269,12 +285,19 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
          current_scope = prev_scope;
       }
 
-      if (node->destination != nullptr) {
+      if (node->returns) {
          // we have a location to return to
          
          // first make sure we actually return something
-         // then return it from this fn
-         // assignment would call this
+         std::shared_ptr<Value> ret = return_buffer.top();
+         if (ret == nullptr) {
+            std::cout << "ERROR: Expecting return value but nothing was returned" << std::endl;
+         } else {
+            log("Returning value");
+            return_buffer.pop();
+            // just return the value and our assignment visit should handle it
+            return ret;
+         }
       }
    }
 

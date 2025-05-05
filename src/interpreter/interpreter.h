@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <stack>
 
 class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* parse text to ast */
@@ -26,6 +27,8 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    std::vector<Token> tokens;
    /* pointer to root program of ast */
    ASTNode* ast;
+   /* stack of values to return with function calls */
+   std::stack<std::shared_ptr<Value>> return_buffer;
 
    /* pointer to global scope */
    std::shared_ptr<Scope> global_scope;
@@ -67,6 +70,7 @@ public:
    std::shared_ptr<Value> visit_binary_op(BinaryOp*) override;
    std::shared_ptr<Value> visit_unary_op(UnaryOp*) override;
    std::shared_ptr<Value> visit_variable(Variable*) override;
+   std::shared_ptr<Value> visit_return(ReturnStatement*) override;
 
    /* STATEMENT HANDLERS */
    std::shared_ptr<Value> visit_block(Block*) override;

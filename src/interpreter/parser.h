@@ -34,6 +34,7 @@ public:
    StatementList* statement_list();
    ASTNode* statement();
    ASTNode* assignment_statement(bool new_var = true);
+   ReturnStatement* return_statement();
    Variable* variable();
    ASTNode* empty();
 
@@ -42,5 +43,5 @@ public:
    ASTNode* expr();
 
    FunctionDecl* function_decl();
-   FunctionCall* function_call();
+   FunctionCall* function_call(bool returning = false);
 };
