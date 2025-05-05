@@ -205,7 +205,7 @@ std::vector<Token> Lexer::tokenize() {
       start = current;
 
       Token t = scan_token();
-      std::cout << "found " << t.to_str();
+      //std::cout << "found " << t.to_str();
 
       switch (t.type) {
          default:
@@ -218,7 +218,7 @@ std::vector<Token> Lexer::tokenize() {
             break;
       }
 
-      std::cout << " finished" << std::endl;
+      //std::cout << " finished" << std::endl;
       
    }
 
