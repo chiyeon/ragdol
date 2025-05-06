@@ -38,9 +38,18 @@ public:
    Variable* variable();
    ASTNode* empty();
 
+   /* parent statement */
+   ASTNode* full_expr();
+
+   /* expressions */
    ASTNode* factor();
    ASTNode* term();
    ASTNode* expr();
+
+   /* conditions */
+   ASTNode* logical_or();
+   ASTNode* logical_and();
+   ASTNode* comparison();
 
    FunctionDecl* function_decl();
    FunctionCall* function_call(bool returning = false);

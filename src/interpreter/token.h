@@ -14,6 +14,8 @@ enum class TokenType {
    PLUS, MINUS, MULT, DIV,
    PLUS_EQ, MINUS_EQ, MULT_EQ, DIV_EQ,
    GT, LT, GTE, LTE, EQ,
+   LOGICAL_OR,
+   LOGICAL_AND,
    COMMA,
    PERIOD,
    ASSIGN,

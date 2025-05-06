@@ -137,6 +137,14 @@ std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
          return Value::make(Value::Type::INT, left->get_as_int() * right->get_as_int());
       case TokenType::DIV:
          return Value::make(Value::Type::INT, left->get_as_int() / right->get_as_int());
+      case TokenType::LOGICAL_AND:
+         return Value::make(Value::Type::BOOL, left->get_as_bool() && right->get_as_bool());
+      case TokenType::LOGICAL_OR:
+         return Value::make(Value::Type::BOOL, left->get_as_bool() || right->get_as_bool());
+      case TokenType::EQ:
+         return Value::make(Value::Type::BOOL, left->equals(right));
+      case TokenType::NOT_EQ:
+         return Value::make(Value::Type::BOOL, !left->equals(right));
       default:
          return Value::make(Value::Type::NIL);
    }

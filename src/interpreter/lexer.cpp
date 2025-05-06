@@ -155,6 +155,8 @@ Token Lexer::scan_token() {
          break;
       case '.': return make_token(TokenType::PERIOD); break;
       case ',': return make_token(TokenType::COMMA); break;
+      case '|': return match('|') ? make_token(TokenType::LOGICAL_OR) : make_token(TokenType::EMPTY); break; // todo bit or
+      case '&': return match('&') ? make_token(TokenType::LOGICAL_AND) : make_token(TokenType::EMPTY); break;
       case '\'':
       case '\"': 
           return parse_string(); break;

@@ -109,7 +109,7 @@ ASTNode* Parser::assignment_statement(bool new_var) {
    eat(TokenType::ASSIGN);
 
    // expression target
-   ASTNode* target = expr();
+   ASTNode* target = full_expr();
 
    return new Assignment(t, dest, assign_token, target, new_var);
 }
@@ -126,7 +126,7 @@ ReturnStatement* Parser::return_statement() {
    ASTNode* ret_value = nullptr;
    if (peek().type != TokenType::STATEMENTEND) {
       // try to parse argument
-      ret_value = expr();
+      ret_value = full_expr();
       //advance();
 
       
@@ -158,8 +158,9 @@ ASTNode* Parser::factor() {
    Token t = peek();
    switch (t.type) {
       default:
+         std::cout << "ERROR: Found type " << t.type_to_str.at(t.type) << " and didn't know what to do" << std::endl;
          /* TODO move this somewhere else? */
-         return variable();
+         //return variable();
          break;
       case TokenType::IDENTIFIER:
          if (peekpeek().type == TokenType::LEFTPAREN) {
@@ -175,6 +176,9 @@ ASTNode* Parser::factor() {
       case TokenType::MINUS:
          eat(TokenType::MINUS);
          return new UnaryOp(t, factor());
+      case TokenType::BOOLEAN:
+         eat(TokenType::BOOLEAN);
+         return new Literal(t, Value::make(Value::Type::BOOL, t.lexeme == "true"));
       case TokenType::INTEGER:
          eat(TokenType::INTEGER);
          return new Literal(t, Value::make(Value::Type::INT, std::stoi(t.lexeme)));
@@ -186,7 +190,7 @@ ASTNode* Parser::factor() {
          return new Literal(t, Value::make(Value::Type::STRING, t.lexeme));
       case TokenType::LEFTPAREN:
          eat(TokenType::LEFTPAREN);
-         ASTNode* val = expr();
+         ASTNode* val = full_expr();
          eat(TokenType::RIGHTPAREN);
          return val;
    }
@@ -227,6 +231,50 @@ ASTNode* Parser::expr() {
    return n;
 }
 
+ASTNode* Parser::comparison() {
+   ASTNode* n = expr();
+
+   TokenType t = peek().type;
+   while (t == TokenType::EQ || t == TokenType::NOT_EQ || t == TokenType::GT || t == TokenType::GTE || t == TokenType::LT || t == TokenType::LTE) {
+      Token t = peek();
+      eat(t.type);
+
+      n = new BinaryOp(t, n, t, expr());
+   }
+
+   return n;
+}
+
+ASTNode* Parser::logical_and() {
+   ASTNode* n = comparison();
+
+   while (peek().type == TokenType::LOGICAL_AND) {
+      Token t = peek();
+      eat(TokenType::LOGICAL_AND);
+
+      n = new BinaryOp(t, n, t, comparison());
+   }
+
+   return n;
+}
+
+ASTNode* Parser::logical_or() {
+   ASTNode* n = logical_and();
+
+   while (peek().type == TokenType::LOGICAL_OR) {
+      Token t = peek();
+      eat(TokenType::LOGICAL_OR);
+
+      n = new BinaryOp(t, n, t, logical_and());
+   }
+
+   return n;
+}
+
+ASTNode* Parser::full_expr() {
+   return logical_or();
+}
+
 FunctionCall* Parser::function_call(bool returning) {
    /*
     * identifier aka fn name lparen arbitrary # of agrs rparen
@@ -246,7 +294,7 @@ FunctionCall* Parser::function_call(bool returning) {
       while (true) {
          next = peek();
 
-         args.push_back(expr());
+         args.push_back(full_expr());
          if (peek().type == TokenType::RIGHTPAREN) {
             break;
          } else {
