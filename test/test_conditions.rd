@@ -14,3 +14,5 @@ print()
 print("should be false:")
 print(sbfalse1, sbfalse2, sbfalse3)
 
+var x = 10 == 10
+print(x)

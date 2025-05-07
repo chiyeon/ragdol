@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
    std::cout << "Lexed tokens:" << std::endl;
    std::cout << "\t";
    for (auto t : tokens) {
-      std::cout << t.line << ", " << t.column << "\t: " << t.to_str() << ", ";
+      std::cout << t.line << ", " << t.column << "\t: " << t.to_str() << ", " << std::endl;
    }
    std::cout << std::endl;
    */

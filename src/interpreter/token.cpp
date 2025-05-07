@@ -44,6 +44,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::RETURN, "return" },
    { TokenType::LOGICAL_OR, "or" },
    { TokenType::LOGICAL_AND, "and" },
+   { TokenType::PERIOD, "period" },
 };
 
 std::string Token::to_str() {

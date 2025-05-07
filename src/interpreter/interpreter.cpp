@@ -126,36 +126,43 @@ std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
 
    // these unfortunately may be a bit verbose for full functionality
    // e.g. short circuiting
+   std::shared_ptr<Value> left = node->left->accept(*this);
+
    switch(node->op.type) {
       // TODO add double/int adding
       case TokenType::PLUS:
-         return Value::make(Value::Type::INT, node->left->accept(*this)->get_as_int() + node->right->accept(*this)->get_as_int());
+         return Value::make(Value::Type::INT, left->get_as_int() + node->right->accept(*this)->get_as_int());
       case TokenType::MINUS:
-         return Value::make(Value::Type::INT, node->left->accept(*this)->get_as_int() - node->right->accept(*this)->get_as_int());
+         return Value::make(Value::Type::INT, left->get_as_int() - node->right->accept(*this)->get_as_int());
       case TokenType::MULT:
-         return Value::make(Value::Type::INT, node->left->accept(*this)->get_as_int() * node->right->accept(*this)->get_as_int());
+         return Value::make(Value::Type::INT, left->get_as_int() * node->right->accept(*this)->get_as_int());
       case TokenType::DIV:
-         return Value::make(Value::Type::INT, node->left->accept(*this)->get_as_int() / node->right->accept(*this)->get_as_int());
+         return Value::make(Value::Type::INT, left->get_as_int() / node->right->accept(*this)->get_as_int());
+      /* short circuit the AND and OR */
       case TokenType::LOGICAL_AND:
          {
-            bool left = node->left->accept(*this)->get_as_bool();
-            if (!left) {
+            bool left_val = left->get_as_bool();
+            /*
+            if (!left_val) {
                return Value::make(Value::Type::BOOL, false);
             }
-            return Value::make(Value::Type::BOOL, left && node->right->accept(*this)->get_as_bool());
+            */
+            return Value::make(Value::Type::BOOL, left_val && node->right->accept(*this)->get_as_bool());
          }
       case TokenType::LOGICAL_OR:
          {
-            bool left = node->left->accept(*this)->get_as_bool();
-            if (left) {
+            bool left_val = left->get_as_bool();
+            /*
+            if (left_val) {
                return Value::make(Value::Type::BOOL, true);
             }
-            return Value::make(Value::Type::BOOL, left || node->right->accept(*this)->get_as_bool());
+            */
+            return Value::make(Value::Type::BOOL, left_val || node->right->accept(*this)->get_as_bool());
          }
       case TokenType::EQ:
-         return Value::make(Value::Type::BOOL, node->left->accept(*this)->equals(node->right->accept(*this)));
+         return Value::make(Value::Type::BOOL, left->equals(node->right->accept(*this)));
       case TokenType::NOT_EQ:
-         return Value::make(Value::Type::BOOL, !node->left->accept(*this)->equals(node->right->accept(*this)));
+         return Value::make(Value::Type::BOOL, !left->equals(node->right->accept(*this)));
       default:
          return Value::make(Value::Type::NIL);
    }

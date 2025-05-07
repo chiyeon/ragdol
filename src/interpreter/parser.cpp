@@ -14,7 +14,7 @@ ASTNode* Parser::parse() {
 }
 
 bool Parser::is_at_end() {
-   return tokens.at(current).type == TokenType::ENDOFFILE;
+   return current >= tokens.size();
 }
 
 Token Parser::advance() {
@@ -156,6 +156,9 @@ ASTNode* Parser::factor() {
     * factor = INTEGER | LEFTPAREN ASTNode RIGHTPAREN
     */
    Token t = peek();
+   if (is_at_end()) {
+      std::cout << "UH OH STINKY " << std::endl;
+   }
    switch (t.type) {
       default:
          std::cout << "ERROR: Found type " << t.type_to_str.at(t.type) << " and didn't know what to do" << std::endl;
@@ -234,8 +237,7 @@ ASTNode* Parser::expr() {
 ASTNode* Parser::comparison() {
    ASTNode* n = expr();
 
-   TokenType t = peek().type;
-   while (t == TokenType::EQ || t == TokenType::NOT_EQ || t == TokenType::GT || t == TokenType::GTE || t == TokenType::LT || t == TokenType::LTE) {
+   while (peek().type == TokenType::EQ || peek().type == TokenType::NOT_EQ || peek().type == TokenType::GT || peek().type == TokenType::GTE || peek().type == TokenType::LT || peek().type == TokenType::LTE) {
       Token t = peek();
       eat(t.type);
 
