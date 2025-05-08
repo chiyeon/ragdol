@@ -119,6 +119,12 @@ ASTNode* Parser::assignment_statement(bool new_var) {
 ASTNode* Parser::control_statement() {
    Token t = peek();
 
+   ASTNode* head;
+   ASTNode* p;
+
+   // get normal if statmenet first
+   // a little verbose this approach
+   // but its clearer and more rock solid
    eat(TokenType::IF);
 
    // get condition
@@ -127,14 +133,46 @@ ASTNode* Parser::control_statement() {
    eat(TokenType::RIGHTPAREN);
 
    ASTNode* body = block();
-   ASTNode* else_body = nullptr;
+
+   head = new IfStatement(t, condition, body);
+   p = head;
+
+   // cycle through any elifs
+   t = peek();
+   while (t.type == TokenType::ELIF) {
+      eat(TokenType::ELIF);
+
+      // similar to before, just keep creating
+      // but this time connect the previous with us now
+
+      eat(TokenType::LEFTPAREN);
+      ASTNode* condition = full_expr();
+      eat(TokenType::RIGHTPAREN);
+
+      ASTNode* body = block();
+
+      // move pointer along, linking to the previous 
+      // as an else clause
+      ASTNode* n = new IfStatement(t, condition, body);
+      ((IfStatement*)p)->set_else(n);
+      p = n;
+
+      t = peek();
+   }
+
+   // now that we've cycled thorugh all, check for any else
+   // statements at the end, connecting to the last
+   // in our linked list
 
    if (peek().type == TokenType::ELSE) {
       eat(TokenType::ELSE);
-      else_body = block();
+      ASTNode* else_body = block();
+
+      ((IfStatement*) p)->set_else(else_body);
    }
 
-   return new IfStatement(t, condition, body, else_body);
+   // return head
+   return head;
 }
 
 ReturnStatement* Parser::return_statement() {

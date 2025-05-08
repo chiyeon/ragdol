@@ -273,6 +273,11 @@ struct IfStatement : public ASTNode {
       : ASTNode(t), condition(condition), body(body), else_body(nullptr)
    { }
 
+   void set_else(ASTNode* new_else) {
+      if (else_body != nullptr) delete else_body;
+      else_body = new_else;
+   }
+
    ~IfStatement() {
       delete condition;
       delete body;

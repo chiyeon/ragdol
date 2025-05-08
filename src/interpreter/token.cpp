@@ -28,6 +28,7 @@ const std::unordered_map<TokenType, std::string> Token::type_to_str = {
    { TokenType::VAR, "var" },
    { TokenType::IF, "if" },
    { TokenType::ELSE, "else" },
+   { TokenType::ELIF, "elif" },
    { TokenType::WHILE, "while" },
    { TokenType::FOR, "for" },
    { TokenType::PRINT, "print" },

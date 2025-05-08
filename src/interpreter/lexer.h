@@ -34,6 +34,8 @@ class Lexer {
 
    std::unordered_map<std::string, TokenType> keywords = {
       { "if", TokenType::IF },
+      { "else", TokenType::ELSE },
+      { "elif", TokenType::ELIF },
       { "while", TokenType::WHILE },
       { "for", TokenType::FOR },
       { "true", TokenType::BOOLEAN },
@@ -41,7 +43,6 @@ class Lexer {
       { "var", TokenType::VAR },
       { "fn", TokenType::FUNCTIONDECL },
       { "return", TokenType::RETURN },
-      { "else", TokenType::ELSE },
    };
 
 public:
