@@ -290,6 +290,8 @@ std::shared_ptr<Value> Interpreter::visit_return(ReturnStatement* node) {
 
    // TODO break us out of whatever statemnets we're in and return this function
 
+   throw ReturnException(ret_value);
+
    // add to return buffer
    return_buffer.push(ret_value);
 
@@ -353,11 +355,25 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
          }
 
          // run code
-         var->get_as_function()->body->accept(*this);
+         try {
+            var->get_as_function()->body->accept(*this);
+         } catch (ReturnException& ret) {
+            current_scope = prev_scope;
+            if (ret.value == nullptr) {
+               std::cout << "ERROR: Expecting return value but nothing was returned" << std::endl;
+            } else {
+               log("Returning value");
+               //return_buffer.pop();
+               // just return the value and our assignment visit should handle it
+               return ret.value;
+            }
+
+         }
 
          // return our scope to previous
          current_scope = prev_scope;
       }
+      /*
 
       if (node->returns) {
          // we have a location to return to
@@ -373,6 +389,7 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
             return ret;
          }
       }
+      */
    }
 
    return nullptr;

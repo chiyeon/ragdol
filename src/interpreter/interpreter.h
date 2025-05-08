@@ -12,6 +12,13 @@
 #include <memory>
 #include <stack>
 
+class ReturnException {
+public:
+   std::shared_ptr<Value> value;
+   ReturnException(const std::shared_ptr<Value>& value)
+      : value(value) {}
+};
+
 class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* parse text to ast */
    Lexer lexer;
