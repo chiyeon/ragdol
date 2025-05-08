@@ -64,6 +64,14 @@ public:
    bool is_truthy();
    bool equals(std::shared_ptr<Value>);
 
+   bool is_int() { return type == Type::INT; }
+   bool is_float() { return type == Type::FLOAT; }
+   bool is_bool() { return type == Type::BOOL; }
+   bool is_string() { return type == Type::STRING; }
+   bool is_function() { return type == Type::FUNCTION; }
+   bool is_builtin_function() { return type == Type::BUILTINFUNCTION; }
+   bool is_nil() { return type == Type::NIL; }
+
    int get_as_int();
    float get_as_float();
    std::string get_as_str();

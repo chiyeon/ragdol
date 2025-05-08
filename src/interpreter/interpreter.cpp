@@ -163,6 +163,54 @@ std::shared_ptr<Value> Interpreter::visit_binary_op(BinaryOp* node) {
          return Value::make(Value::Type::BOOL, left->equals(node->right->accept(*this)));
       case TokenType::NOT_EQ:
          return Value::make(Value::Type::BOOL, !left->equals(node->right->accept(*this)));
+      case TokenType::LT:
+         {
+            std::shared_ptr<Value> right = node->right->accept(*this);
+            if ((left->is_int() || left->is_float()) && (right->is_int() || right->is_float())) {
+               float leftval = left->is_int() ? left->get_as_int() : left->get_as_float();
+               float rightval = right->is_int() ? right->get_as_int() : right->get_as_float();
+
+               return Value::make(Value::Type::BOOL, leftval < rightval);
+            } else {
+               std::cout << "ERROR: Can't compare " << left->to_str() << " and " << right->to_str() << std::endl;
+            }
+         }
+      case TokenType::LTE:
+         {
+            std::shared_ptr<Value> right = node->right->accept(*this);
+            if ((left->is_int() || left->is_float()) && (right->is_int() || right->is_float())) {
+               float leftval = left->is_int() ? left->get_as_int() : left->get_as_float();
+               float rightval = right->is_int() ? right->get_as_int() : right->get_as_float();
+
+               return Value::make(Value::Type::BOOL, leftval <= rightval);
+            } else {
+               std::cout << "ERROR: Can't compare " << left->to_str() << " and " << right->to_str() << std::endl;
+            }
+         }
+      case TokenType::GT:
+         {
+            std::shared_ptr<Value> right = node->right->accept(*this);
+            if ((left->is_int() || left->is_float()) && (right->is_int() || right->is_float())) {
+               float leftval = left->is_int() ? left->get_as_int() : left->get_as_float();
+               float rightval = right->is_int() ? right->get_as_int() : right->get_as_float();
+
+               return Value::make(Value::Type::BOOL, leftval > rightval);
+            } else {
+               std::cout << "ERROR: Can't compare " << left->to_str() << " and " << right->to_str() << std::endl;
+            }
+         }
+      case TokenType::GTE:
+         {
+            std::shared_ptr<Value> right = node->right->accept(*this);
+            if ((left->is_int() || left->is_float()) && (right->is_int() || right->is_float())) {
+               float leftval = left->is_int() ? left->get_as_int() : left->get_as_float();
+               float rightval = right->is_int() ? right->get_as_int() : right->get_as_float();
+
+               return Value::make(Value::Type::BOOL, leftval >= rightval);
+            } else {
+               std::cout << "ERROR: Can't compare " << left->to_str() << " and " << right->to_str() << std::endl;
+            }
+         }
       default:
          return Value::make(Value::Type::NIL);
    }
