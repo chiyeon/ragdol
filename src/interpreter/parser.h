@@ -51,6 +51,9 @@ public:
    ASTNode* logical_and();
    ASTNode* comparison();
 
+   /* control flow */
+   ASTNode* control_statement(); 
+
    FunctionDecl* function_decl();
    FunctionCall* function_call(bool returning = false);
 };

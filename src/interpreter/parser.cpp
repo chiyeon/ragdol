@@ -87,6 +87,8 @@ ASTNode* Parser::statement() {
          return function_decl();
       case TokenType::RETURN:
          return return_statement();
+      case TokenType::IF:
+         return control_statement();
    }
 }
 
@@ -112,6 +114,27 @@ ASTNode* Parser::assignment_statement(bool new_var) {
    ASTNode* target = full_expr();
 
    return new Assignment(t, dest, assign_token, target, new_var);
+}
+
+ASTNode* Parser::control_statement() {
+   Token t = peek();
+
+   eat(TokenType::IF);
+
+   // get condition
+   eat(TokenType::LEFTPAREN);
+   ASTNode* condition = full_expr();
+   eat(TokenType::RIGHTPAREN);
+
+   ASTNode* body = block();
+   ASTNode* else_body = nullptr;
+
+   if (peek().type == TokenType::ELSE) {
+      eat(TokenType::ELSE);
+      else_body = block();
+   }
+
+   return new IfStatement(t, condition, body, else_body);
 }
 
 ReturnStatement* Parser::return_statement() {

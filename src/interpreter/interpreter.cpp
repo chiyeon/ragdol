@@ -378,6 +378,22 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
    return nullptr;
 }
 
+std::shared_ptr<Value> Interpreter::visit_if_statement(IfStatement* node) {
+   // condition may not necessarily be a bool
+   // so we can jut do is_truthy()
+   std::shared_ptr<Value> condition = node->condition->accept(*this);
+
+   if (condition->is_truthy()) {
+      node->body->accept(*this);
+   } else {
+      if (node->else_body != nullptr) {
+         node->else_body->accept(*this);
+      }
+   }
+
+   return nullptr;
+}
+
 void Interpreter::print_variables() {
    log("VARIABLES:");
    auto p = current_scope;

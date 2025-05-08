@@ -22,6 +22,8 @@ enum class TokenType {
    FUNCTIONDECL,
    VAR,
    IF,
+   ELSE,
+   ELIF,
    WHILE,
    FOR,
    PRINT,

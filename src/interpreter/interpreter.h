@@ -79,4 +79,5 @@ public:
    std::shared_ptr<Value> visit_assignment(Assignment*) override;
    std::shared_ptr<Value> visit_function_decl(FunctionDecl*) override;
    std::shared_ptr<Value> visit_function_call(FunctionCall*) override;
+   std::shared_ptr<Value> visit_if_statement(IfStatement*) override;
 };

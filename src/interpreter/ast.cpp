@@ -47,3 +47,7 @@ std::shared_ptr<Value> FunctionDecl::accept(Interpreter& visitor) {
 std::shared_ptr<Value> FunctionCall::accept(Interpreter& visitor) {
    return visitor.visit_function_call(this);
 }
+
+std::shared_ptr<Value> IfStatement::accept(Interpreter& visitor) {
+   return visitor.visit_if_statement(this);
+}
