@@ -292,6 +292,26 @@ struct IfStatement : public ASTNode {
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 };
 
+struct WhileLoop : public ASTNode {
+   ASTNode* condition;
+   ASTNode* body;
+
+   WhileLoop(Token t, ASTNode* condition, ASTNode* body)
+      : ASTNode(t), condition(condition), body(body)
+   {}
+
+   ~WhileLoop() {
+      delete condition;
+      delete body;
+   }
+
+   std::string to_str() override {
+      return "While: (" + condition->to_str() + "): " + body->to_str() + ";";
+   }
+
+   std::shared_ptr<Value> accept(Interpreter& visitor) override;
+};
+
 template<typename ret>
 struct ASTVisitor {
    /*
@@ -319,4 +339,5 @@ struct ASTVisitor {
    virtual ret visit_function_decl(FunctionDecl*) = 0;
    virtual ret visit_function_call(FunctionCall*) = 0;
    virtual ret visit_if_statement(IfStatement*) = 0;
+   virtual ret visit_while_loop(WhileLoop*) = 0;
 };

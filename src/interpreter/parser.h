@@ -54,6 +54,9 @@ public:
    /* control flow */
    ASTNode* control_statement(); 
 
+   /* loops */
+   ASTNode* while_loop();
+
    FunctionDecl* function_decl();
    FunctionCall* function_call(bool returning = false);
 };

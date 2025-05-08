@@ -51,3 +51,7 @@ std::shared_ptr<Value> FunctionCall::accept(Interpreter& visitor) {
 std::shared_ptr<Value> IfStatement::accept(Interpreter& visitor) {
    return visitor.visit_if_statement(this);
 }
+
+std::shared_ptr<Value> WhileLoop::accept(Interpreter& visitor) {
+   return visitor.visit_while_loop(this);
+}

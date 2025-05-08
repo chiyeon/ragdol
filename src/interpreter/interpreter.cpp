@@ -394,6 +394,21 @@ std::shared_ptr<Value> Interpreter::visit_if_statement(IfStatement* node) {
    return nullptr;
 }
 
+std::shared_ptr<Value> Interpreter::visit_while_loop(WhileLoop* node) {
+   // condition may not be a bool, we can do is_truthy()
+
+   std::shared_ptr<Value> condition = node->condition->accept(*this);
+
+   while(condition->is_truthy()) {
+      node->body->accept(*this);
+      
+      // refresh our condition at the end
+      condition = node->condition->accept(*this);
+   }
+
+   return nullptr;
+}
+
 void Interpreter::print_variables() {
    log("VARIABLES:");
    auto p = current_scope;

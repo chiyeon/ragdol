@@ -89,6 +89,8 @@ ASTNode* Parser::statement() {
          return return_statement();
       case TokenType::IF:
          return control_statement();
+      case TokenType::WHILE:
+         return while_loop();
    }
 }
 
@@ -336,6 +338,21 @@ ASTNode* Parser::logical_or() {
 
 ASTNode* Parser::full_expr() {
    return logical_or();
+}
+
+ASTNode* Parser::while_loop() {
+   Token t = peek();
+   eat(TokenType::WHILE);
+
+   // get condition
+   eat(TokenType::LEFTPAREN);
+   ASTNode* condition = full_expr();
+   eat(TokenType::RIGHTPAREN);
+
+   // body
+   ASTNode* body = block();
+
+   return new WhileLoop(t, condition, body);
 }
 
 FunctionCall* Parser::function_call(bool returning) {

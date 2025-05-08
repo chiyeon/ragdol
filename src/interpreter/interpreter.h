@@ -80,4 +80,5 @@ public:
    std::shared_ptr<Value> visit_function_decl(FunctionDecl*) override;
    std::shared_ptr<Value> visit_function_call(FunctionCall*) override;
    std::shared_ptr<Value> visit_if_statement(IfStatement*) override;
+   std::shared_ptr<Value> visit_while_loop(WhileLoop*) override;
 };
