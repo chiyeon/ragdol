@@ -10,7 +10,7 @@
 #include <sstream>
 #include <string>
 
-// System sys;
+System sys;
 
 typedef std::array<Color, 64> Sprite;
 
@@ -64,6 +64,7 @@ std::string read_file(char* path) {
 
    std::ostringstream buffer;
    buffer << file.rdbuf();
+   file.close();
 
    return buffer.str();
 }

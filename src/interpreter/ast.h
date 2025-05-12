@@ -251,7 +251,7 @@ struct ReturnStatement : public ASTNode {
    {}
 
    ~ReturnStatement() {
-      if (value != nullptr) delete value;
+      delete value;
    }
 
    std::string to_str() override {
@@ -281,7 +281,7 @@ struct IfStatement : public ASTNode {
    ~IfStatement() {
       delete condition;
       delete body;
-      if (else_body) delete else_body;
+      delete else_body;
    }
 
    std::string to_str() override {

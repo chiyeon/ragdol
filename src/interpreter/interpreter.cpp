@@ -73,6 +73,18 @@ Interpreter::Interpreter(std::string src)
    std::shared_ptr<BuiltinFunction> print_builtin = std::make_shared<BuiltinFunction>(print_fndef);
    global_scope->assign_or_insert("print", Value::make(Value::Type::BUILTINFUNCTION, print_builtin));
 
+   // START WINDOW
+   std::function<void()> update_window = [this]() {
+      update();
+   };
+   fndef init_window_fndef = [this, update_window](std::vector<std::shared_ptr<Value>> args) -> std::shared_ptr<Value> {
+            update_body = args[0]->get_as_function()->body;
+            system.set_update_function(update_window);
+            system.start(); 
+         };
+   std::shared_ptr<BuiltinFunction> init_window_builtin = std::make_shared<BuiltinFunction>(init_window_fndef);
+   global_scope->assign_or_insert("init_window", Value::make(Value::Type::BUILTINFUNCTION, init_window_builtin));
+
    tokens = lexer.tokenize();
 
    parser.set_tokens(tokens);
@@ -84,6 +96,7 @@ Interpreter::~Interpreter() {
 
 ASTNode* Interpreter::parse() {
    ast = parser.parse();
+
    return ast;
 }
 

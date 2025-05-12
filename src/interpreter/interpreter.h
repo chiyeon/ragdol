@@ -6,6 +6,7 @@
 #include "ast.h"
 #include "value.h"
 #include "scope.h"
+#include "sys/system.h"
 
 #include <string>
 #include <vector>
@@ -23,6 +24,15 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* parse text to ast */
    Lexer lexer;
    Parser parser;
+
+   /* for game stuff */
+   System system;
+   /* passed into init_window as a function */
+   ASTNode* update_body;
+
+   void update() {
+      update_body->accept(*this);
+   }
 
    /* visitors */
    /*
