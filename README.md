@@ -4,6 +4,19 @@ Ragdol is a tiny game engine & fantasy console written in C++20 and powered by S
 - a 128 x 128 screen
 - 8 button inputs (4 directional, 3 free, 1 menu/start)
 
+## Quickstart
+### Requirements
+- SDL2
+- C++20 compiler (currently using `g++`)
+
+```
+# build project
+$ make
+
+# run scripts
+$ ./ragdol test/fib.rd
+```
+
 ## Interpreter
 Currently ragdol uses a custom dynamic scripting language (that resembles an amalgamation of C and Python) with a custom interpreter. This is heavily a work in progress at the moment, and the language currently has support for:
 - Dynamic creation and assignment/reassignment of variables (int, float, boolean, string)
