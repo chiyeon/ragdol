@@ -18,7 +18,7 @@ $ ./ragdol test/fib.rd
 ```
 
 ## Interpreter
-Currently ragdol uses a custom dynamic scripting language (that resembles an amalgamation of C and Python) with a custom interpreter. This is heavily a work in progress at the moment, and the language currently has support for:
+Currently ragdol uses a custom dynamic scripting language (that resembles an amalgamation of C and Python) with a custom interpreter that uses the visitor pattern. This is heavily a work in progress at the moment, and the language currently has support for:
 - Dynamic creation and assignment/reassignment of variables (int, float, boolean, string)
 - Scoping/Nesting of variables & logic
 - Full expressions with order of operations from logical AND/OR all the way down to add/subtract
