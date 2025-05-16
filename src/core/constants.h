@@ -7,7 +7,7 @@ inline constexpr int SCREEN_HEIGHT = 128;
 inline constexpr int WINDOW_SCALE = 4;
 
 enum InputState {
-   BTN_UP,
+   BTN_UP = 0,
    BTN_DOWN,
    BTN_LEFT,
    BTN_RIGHT,

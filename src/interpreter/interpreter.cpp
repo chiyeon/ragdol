@@ -85,6 +85,27 @@ Interpreter::Interpreter(std::string src)
    std::shared_ptr<BuiltinFunction> init_window_builtin = std::make_shared<BuiltinFunction>(init_window_fndef);
    global_scope->assign_or_insert("init_window", Value::make(Value::Type::BUILTINFUNCTION, init_window_builtin));
 
+   // DRAW TEXT
+   fndef draw_text_fndef = [this](std::vector<std::shared_ptr<Value>> args) -> std::shared_ptr<Value> {
+      // validate args
+      if (args.size() != 3) {
+         std::cout << "ERROR: draw_text expected 3 args" << std::endl;
+         return nullptr;
+      } // TODO we would do type checks here
+
+      system.graphics().draw_text(args[0]->get_as_int(), args[1]->get_as_int(), args[2]->get_as_str());
+      return nullptr;
+   };
+   std::shared_ptr<BuiltinFunction> draw_text_builtin = std::make_shared<BuiltinFunction>(draw_text_fndef);
+   global_scope->assign_or_insert("draw_text", Value::make(Value::Type::BUILTINFUNCTION, draw_text_builtin));
+
+   // BUTTON HELD
+   fndef is_button_held_fndef = [this](std::vector<std::shared_ptr<Value>> args) -> std::shared_ptr<Value> {
+      return std::make_shared<Value>(Value::Type::BOOL, system.input().is_button_held((InputState)args[0]->get_as_int()));
+   };
+   std::shared_ptr<BuiltinFunction> is_button_held_builtin = std::make_shared<BuiltinFunction>(is_button_held_fndef);
+   global_scope->assign_or_insert("is_button_held", Value::make(Value::Type::BUILTINFUNCTION, is_button_held_builtin));
+
    tokens = lexer.tokenize();
 
    parser.set_tokens(tokens);
@@ -352,7 +373,10 @@ std::shared_ptr<Value> Interpreter::visit_function_call(FunctionCall* node) {
 
       // if built in, run built in code:
       if (var->get_type() == Value::Type::BUILTINFUNCTION) {
-         var->get_as_builtin_function()->function(args); 
+         std::shared_ptr<Value> ret = var->get_as_builtin_function()->function(args); 
+         if (ret != nullptr) {
+            return ret;
+         }
       } else if (var->get_type() == Value::Type::FUNCTION) {
          // get function info
          FunctionDecl* fn_info = var->get_as_function();
