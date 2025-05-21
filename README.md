@@ -25,9 +25,22 @@ Currently ragdol uses a custom dynamic scripting language (that resembles an ama
 - Function definition & calling with optional returns and arguments
 - Control flow with if/elif/else
 - Loops (Currently only while loop)
-- Builtin functions (Print, open window)
+- Builtin basic functions (Print, open window)
+- Builtin game engine functions (process input, render graphics, init window)
 
-## Ragdol Example
+Below is a basic example of an update function in a ragdol script polling input & drawing a moving player character & text to the screen.
+
+![](/repo/helloworld.gif)
+
+## WIP Features
+Ragdol is a WIP engine and currently is looking to add the following:
+- Arrays & Objects/tables
+- Expansive builtin math library
+- Game engine utilities (including for sound, levels, OOP, vectors & vector math, and more)
+- Built in sprite editor & custom sprite loading
+- General optimizations to interpreter
+
+## Basic Ragdol Script Example
 ```
 fn fb(n) {
     if (n <= 1) { return n }
