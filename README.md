@@ -11,6 +11,9 @@ Ragdol is a tiny game engine & fantasy console written in C++20 and powered by S
 
 ```
 # build project
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
 
 # run scripts
