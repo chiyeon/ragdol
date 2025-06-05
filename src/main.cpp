@@ -1,12 +1,12 @@
-#include "sys/system.h"
 #include "interpreter/interpreter.h"
+#include "sys/system.h"
 
 #include <SDL2/SDL.h>
 
-#include <iostream>
-#include <cmath>
 #include <array>
+#include <cmath>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -15,14 +15,8 @@ System sys;
 typedef std::array<Color, 64> Sprite;
 
 const Sprite TEST_TEX = {
-   0, 0, 1, 1, 1, 1, 0, 0,
-   0, 1, 1, 1, 1, 1, 1, 0,
-   1, 1, 2, 1, 1, 2, 1, 1,
-   1, 1, 1, 1, 1, 1, 1, 1,
-   1, 1, 2, 1, 1, 2, 1, 1,
-   1, 1, 1, 2, 2, 1, 1, 1,
-   0, 1, 1, 1, 1, 1, 1, 0,
-   0, 0, 1, 1, 1, 1, 0, 0,
+    0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0,
 };
 
 int x = SCREEN_WIDTH / 2;
@@ -35,7 +29,7 @@ void update() {
    if (sys.input().is_button_held(BTN_UP)) {
       y--;
       sys.graphics().draw_text(1, 10, "UP");
-   } 
+   }
    if (sys.input().is_button_held(BTN_DOWN)) {
       y++;
       sys.graphics().draw_text(1, 10, "DOWN");
@@ -55,9 +49,11 @@ void update() {
 }
 */
 
-std::string read_file(char* path) {
+std::string read_file(char* path)
+{
    std::ifstream file(path, std::ios::in | std::ios::binary);
-   if (!file) {
+   if (!file)
+   {
       std::cerr << "Failed to open file: " << path << std::endl;
       return "";
    }
@@ -69,20 +65,25 @@ std::string read_file(char* path) {
    return buffer.str();
 }
 
-int main(int argc, char* argv[]) {
-   if (argc < 2) {
+int main(int argc, char* argv[])
+{
+   if (argc < 2)
+   {
       std::cerr << "USAGE: " << argv[0] << " path/to/file" << std::endl;
       return 1;
    }
 
-   if (argc >= 3) {
+   if (argc >= 3)
+   {
       loglevel = atoi(argv[2]);
    }
 
    std::string INPUT = read_file(argv[1]);
-   if (INPUT.length() == 0) return 1;
+   if (INPUT.length() == 0)
+      return 1;
 
-   if (loglevel > 0) {
+   if (loglevel > 0)
+   {
       std::cout << "STARTING INTERPRETER WITH INPUT:" << std::endl;
       std::cout << "" << INPUT << std::endl;
    }
@@ -102,7 +103,8 @@ int main(int argc, char* argv[]) {
 
    ASTNode* ast = interpreter.parse();
 
-   if (loglevel > 0) {
+   if (loglevel > 0)
+   {
       std::cout << "Parsed AST:" << std::endl;
       std::cout << ast->to_str() << std::endl;
 
@@ -111,7 +113,8 @@ int main(int argc, char* argv[]) {
 
    interpreter.interpret();
 
-   if (loglevel > 0) {
+   if (loglevel > 0)
+   {
       interpreter.print_variables();
    }
 

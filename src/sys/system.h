@@ -7,8 +7,9 @@
 
 #include <functional>
 
-class System {
-public:
+class System
+{
+ public:
    System();
 
    void start();
@@ -18,18 +19,18 @@ public:
    Graphics& graphics() { return graphics_; }
    Input& input() { return input_; }
 
-private:
+ private:
    std::function<void()> update;
    void default_update();
 
    SDL_Event event;
-   SDL_Renderer *renderer;
-   SDL_Window *window;
+   SDL_Renderer* renderer;
+   SDL_Window* window;
 
    Graphics graphics_;
    Input input_;
 
-   SDL_Texture *frame_buffer;
+   SDL_Texture* frame_buffer;
 
    bool running = true;
 

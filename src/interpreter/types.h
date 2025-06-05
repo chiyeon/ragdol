@@ -1,13 +1,14 @@
 #pragma once
 
-struct Type {
+struct Type
+{
    // todo adds, divs, etc
 };
 
-struct IntType : Type {
-   
+struct IntType : Type
+{
 };
 
-struct FunctionType : Type {
-
+struct FunctionType : Type
+{
 };

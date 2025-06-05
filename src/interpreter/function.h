@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
 #include <functional>
-#include <vector>
 #include <memory>
+#include <string>
+#include <vector>
 
 class Value;
 
@@ -21,16 +21,12 @@ public:
 };
 */
 
-struct BuiltinFunction {
+struct BuiltinFunction
+{
    std::string name;
    fndef function;
 
-   BuiltinFunction(fndef function)
-      : function(function)
-   {}
+   BuiltinFunction(fndef function) : function(function) {}
 
-   std::string to_str() {
-      return "BuiltinFunction<" + name + ">";
-   }
-
+   std::string to_str() { return "BuiltinFunction<" + name + ">"; }
 };

@@ -9,6 +9,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # extra options
 add_compile_options(-Wall -Wextra -O3)
 
+# linting .h and .cpp files with clang-format
+file(GLOB_RECURSE ALL_CXX_SRC
+   "${PROJECT_SOURCE_DIR}/src/*.cpp"
+   "${PROJECT_SOURCE_DIR}/src/*.h"
+)
+
+add_custom_target(
+   format
+   COMMAND clang-format -i ${ALL_CXX_SRC}
+   COMMENT "Running clang-format on src"
+)
+
 include_directories(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src)
 
 # SDL support

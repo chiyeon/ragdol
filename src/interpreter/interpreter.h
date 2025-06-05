@@ -1,26 +1,27 @@
 #pragma once
 
-#include "lexer.h"
-#include "token.h"
-#include "parser.h"
 #include "ast.h"
-#include "value.h"
+#include "lexer.h"
+#include "parser.h"
 #include "scope.h"
 #include "sys/system.h"
+#include "token.h"
+#include "value.h"
 
-#include <string>
-#include <vector>
 #include <memory>
 #include <stack>
+#include <string>
+#include <vector>
 
-class ReturnException {
-public:
+class ReturnException
+{
+ public:
    std::shared_ptr<Value> value;
-   ReturnException(const std::shared_ptr<Value>& value)
-      : value(value) {}
+   ReturnException(const std::shared_ptr<Value>& value) : value(value) {}
 };
 
-class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
+class Interpreter : public ASTVisitor<std::shared_ptr<Value>>
+{
    /* parse text to ast */
    Lexer lexer;
    Parser parser;
@@ -30,9 +31,7 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    /* passed into init_window as a function */
    ASTNode* update_body;
 
-   void update() {
-      update_body->accept(*this);
-   }
+   void update() { update_body->accept(*this); }
 
    /* visitors */
    /*
@@ -51,7 +50,8 @@ class Interpreter : public ASTVisitor<std::shared_ptr<Value>> {
    std::shared_ptr<Scope> global_scope;
    /* current scope we are walking through */
    std::shared_ptr<Scope> current_scope;
-public:
+
+ public:
    /* DEBUG PRINT HELPERS */
    static const int LOG_QUIET = 0;
    static const int LOG_NORMAL = 1;
@@ -60,7 +60,7 @@ public:
    int log_scope = 0; /* tab in per scope */
    void log(std::string, int = LOG_NORMAL, char = '\n');
 
-private:
+ private:
    void enter_new_scope();
    void exit_scope();
 
@@ -71,7 +71,7 @@ private:
    void assign_or_insert_variable(const std::string& var_name, std::shared_ptr<Value> value);
    std::shared_ptr<Value> find_variable(const std::string& var_name);
 
-public:
+ public:
    void print_variables();
 
    Interpreter(std::string src);

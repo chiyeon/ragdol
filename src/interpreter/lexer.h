@@ -2,11 +2,12 @@
 
 #include "token.h"
 
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-class Lexer {
+class Lexer
+{
    std::string src;
    size_t current;
    size_t start;
@@ -33,26 +34,14 @@ class Lexer {
    Token parse_identifier();
 
    std::unordered_map<std::string, TokenType> keywords = {
-      { "if", TokenType::IF },
-      { "else", TokenType::ELSE },
-      { "elif", TokenType::ELIF },
-      { "while", TokenType::WHILE },
-      { "for", TokenType::FOR },
-      { "true", TokenType::BOOLEAN },
-      { "false", TokenType::BOOLEAN },
-      { "var", TokenType::VAR },
-      { "fn", TokenType::FUNCTIONDECL },
-      { "return", TokenType::RETURN },
+       {"if", TokenType::IF},         {"else", TokenType::ELSE}, {"elif", TokenType::ELIF},
+       {"while", TokenType::WHILE},   {"for", TokenType::FOR},   {"true", TokenType::BOOLEAN},
+       {"false", TokenType::BOOLEAN}, {"var", TokenType::VAR},   {"fn", TokenType::FUNCTIONDECL},
+       {"return", TokenType::RETURN},
    };
 
-public:
-   explicit Lexer(std::string src)
-      : src(std::move(src))
-      , current(0)
-      , start(0)
-      , line(1)
-      , column(1)
-      {}
-   
-   std::vector<Token> tokenize(); 
+ public:
+   explicit Lexer(std::string src) : src(std::move(src)), current(0), start(0), line(1), column(1) {}
+
+   std::vector<Token> tokenize();
 };

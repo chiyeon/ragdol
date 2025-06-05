@@ -4,8 +4,9 @@
 
 #include <array>
 
-class Input {
-public:
+class Input
+{
+ public:
    Input();
 
    void poll_input();
@@ -13,7 +14,8 @@ public:
    bool is_button_pressed(InputState i);
    bool is_button_held(InputState i);
    bool is_button_released(InputState i);
-private:
+
+ private:
    std::array<bool, 8> input_state;
    std::array<bool, 8> prev_input_state;
 };

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "token.h"
 #include "ast.h"
+#include "token.h"
 
 #include <vector>
 
-class Parser {
+class Parser
+{
    std::vector<Token> tokens;
    size_t current = 0;
 
@@ -18,11 +19,11 @@ class Parser {
 
    void error(TokenType type);
 
-public:
-   Parser()
-      {}
+ public:
+   Parser() {}
 
-   void set_tokens(std::vector<Token> t) {
+   void set_tokens(std::vector<Token> t)
+   {
       current = 0;
       tokens = t;
    }
@@ -52,7 +53,7 @@ public:
    ASTNode* comparison();
 
    /* control flow */
-   ASTNode* control_statement(); 
+   ASTNode* control_statement();
 
    /* loops */
    ASTNode* while_loop();

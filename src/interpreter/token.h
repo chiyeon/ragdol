@@ -3,17 +3,29 @@
 #include <string>
 #include <unordered_map>
 
-enum class TokenType {
+enum class TokenType
+{
    EMPTY,
    FLOAT,
    INTEGER,
    STRING,
    BOOLEAN,
    IDENTIFIER,
-   NOT, NOT_EQ,
-   PLUS, MINUS, MULT, DIV,
-   PLUS_EQ, MINUS_EQ, MULT_EQ, DIV_EQ,
-   GT, LT, GTE, LTE, EQ,
+   NOT,
+   NOT_EQ,
+   PLUS,
+   MINUS,
+   MULT,
+   DIV,
+   PLUS_EQ,
+   MINUS_EQ,
+   MULT_EQ,
+   DIV_EQ,
+   GT,
+   LT,
+   GTE,
+   LTE,
+   EQ,
    LOGICAL_OR,
    LOGICAL_AND,
    COMMA,
@@ -39,7 +51,8 @@ enum class TokenType {
    RETURN
 };
 
-struct Token {
+struct Token
+{
    TokenType type;
    std::string lexeme;
 
@@ -48,11 +61,9 @@ struct Token {
    double number_value;
 
    Token(TokenType type, std::string lexeme, int line, int column)
-      : type(type)
-      , lexeme(std::move(lexeme))
-      , line(line)
-      , column(column)
-      {}
+       : type(type), lexeme(std::move(lexeme)), line(line), column(column)
+   {
+   }
 
    std::string to_str();
 

@@ -2,20 +2,18 @@
 
 #include "value.h"
 
-#include <unordered_map>
-#include <string>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
-class Scope {
+class Scope
+{
    std::shared_ptr<Scope> parent;
    std::unordered_map<std::string, std::shared_ptr<Value>> variables;
-public:
-   Scope()
-      : parent(nullptr)
-      {}
-   Scope(std::shared_ptr<Scope> parent)
-      : parent(parent)
-      {}
+
+ public:
+   Scope() : parent(nullptr) {}
+   Scope(std::shared_ptr<Scope> parent) : parent(parent) {}
 
    std::shared_ptr<Value> get(const std::string& var_name);
    std::shared_ptr<Value> get_in_scope(const std::string& var_name);

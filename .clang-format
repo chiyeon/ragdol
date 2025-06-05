@@ -1,0 +1,12 @@
+---
+BasedOnStyle: LLVM
+IndentWidth: 3
+ColumnLimit: 110
+UseTab: Never
+BreakBeforeBraces: Allman
+AllowShortFunctionsOnASingleLine: Inline
+DerivePointerAlignment: false
+PointerAlignment: Left
+SpacesBeforeTrailingComments: 3
+Language: Cpp
+Standard: c++20
