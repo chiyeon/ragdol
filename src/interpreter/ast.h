@@ -312,6 +312,9 @@ struct WhileLoop : public ASTNode {
    std::shared_ptr<Value> accept(Interpreter& visitor) override;
 };
 
+struct ArrayDecl : public ASTNode {
+};
+
 template<typename ret>
 struct ASTVisitor {
    /*

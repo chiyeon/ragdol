@@ -340,6 +340,22 @@ ASTNode* Parser::full_expr() {
    return logical_or();
 }
 
+ASTNode* Parser::list_expr() {
+   /* either empty list ( [] ) or defined
+    * list ( [ 1, 'hi', anyhintg, ... ] )
+    */
+
+   Token t = peek();
+   eat(TokenType::LEFTBRACKET);
+
+   Token n = peek();
+   while (n.type != TokenType::RIGHTBRACKET) {
+      
+   }
+
+   eat(TokenType::RIGHTBRACKET);
+}
+
 ASTNode* Parser::while_loop() {
    Token t = peek();
    eat(TokenType::WHILE);

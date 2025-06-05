@@ -41,6 +41,9 @@ public:
    /* parent statement */
    ASTNode* full_expr();
 
+   /* list literal */
+   ASTNode* list_expr();
+
    /* expressions */
    ASTNode* factor();
    ASTNode* term();

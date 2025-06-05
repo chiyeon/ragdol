@@ -19,6 +19,8 @@ std::string Value::to_str() {
          return get_as_str(); 
       case Type::BUILTINFUNCTION:
          return get_as_builtin_function()->to_str();
+      case Type::ARRAY:
+         return "array";
    }
 }
 
@@ -137,6 +139,11 @@ std::string Value::get_as_str() {
 FunctionDecl* Value::get_as_function() {
    FunctionDecl** fn = std::get_if<FunctionDecl*>(&data);
    return *fn;
+}
+
+Array* Value::get_as_array() {
+   Array** a = std::get_if<Array*>(&data);
+   return *a;
 }
 
 std::shared_ptr<BuiltinFunction> Value::get_as_builtin_function() {
