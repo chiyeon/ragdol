@@ -14,11 +14,17 @@ file(GLOB_RECURSE ALL_CXX_SRC
    "${PROJECT_SOURCE_DIR}/src/*.cpp"
    "${PROJECT_SOURCE_DIR}/src/*.h"
 )
-
 add_custom_target(
    format
    COMMAND clang-format -i ${ALL_CXX_SRC}
    COMMENT "Running clang-format on src"
+)
+
+# dry run to check files
+add_custom_target(
+   check-format
+   COMMAND clang-format --dry-run --Werror ${ALL_CXX_SRC}
+   COMMENT "Checking project format"
 )
 
 include_directories(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src)
